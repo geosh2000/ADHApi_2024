@@ -7,6 +7,7 @@ on:
 jobs:
   ftp-deploy:
     runs-on: ubuntu-latest
+    environment: Production   # 👈 esto hace disponibles tus secrets
  
     steps:
     - name: Checkout Repo
