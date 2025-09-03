@@ -13,14 +13,21 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v3
 
-    - name: SFTP Deploy
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@v4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        port: 990
-        local_path: ./
-        remote_path: ${{ secrets.FTP_DIR }}
-        sftp_only: true
-        sftpArgs: "-o ConnectTimeout=5 -o StrictHostKeyChecking=no"
+        protocol: ftps
+        port: 21
+        local-dir: ./
+        server-dir: ${{ secrets.FTP_DIR }}
+        exclude: |
+          **/.git*
+          **/.github/**
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+          **/.DS_Store
+          **/.env*
