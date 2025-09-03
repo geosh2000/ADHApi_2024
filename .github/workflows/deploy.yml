@@ -20,8 +20,12 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftps
         local-dir: ./
-        server-dir: /site/wwwroot/testftp   # 👈 carpeta destino en Azure
+        server-dir: ${{ secrets.FTP_DIR }}   # 👈 carpeta destino en Azure
         exclude: |
-          **/.git*
-          **/.github/**
-          **/node_modules/**
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+            **/tests/**
+            **/dumps/**
+            **/.DS_Store
+            **/.env*
