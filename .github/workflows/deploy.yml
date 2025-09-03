@@ -13,15 +13,15 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v3
 
-    - name: FTP Deploy
-      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+    - name: SFTP Deploy
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps
-        local-dir: ./
-        server-dir: ${{ secrets.FTP_DIR }}   # 👈 carpeta destino en Azure
+        port: 22
+        local_path: ./
+        remote_path: /site/wwwroot
         exclude: |
             **/.git*
             **/.github/**
