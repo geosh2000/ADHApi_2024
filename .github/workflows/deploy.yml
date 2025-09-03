@@ -22,11 +22,5 @@ jobs:
         port: 22
         local_path: ./
         remote_path: /site/wwwroot
-        exclude: |
-            **/.git*
-            **/.github/**
-            **/node_modules/**
-            **/tests/**
-            **/dumps/**
-            **/.DS_Store
-            **/.env*
+        sftp_only: true
+        sftpArgs: "-o ConnectTimeout=5 -o StrictHostKeyChecking=no"
