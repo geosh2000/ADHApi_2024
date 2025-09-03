@@ -11,6 +11,7 @@ class Zendesk{
     protected $oAuth = "746907e0b3387a138d2dd5a19e6866bc38ad1c2d7311ed329bc740688cae16a1";
     protected $oAuthOk = "f3e073622652f4fedc8425642410bb38457734751a4bf63cd047815a0ffff5e6";
     protected $whatsVipId = "66b5325e26d2afd65deba6c5";
+    protected $whatsNotifId = "66c0e16072462873692f1c00";
     
     // SUNSHINE
     protected $ss_apiID = "661ef3f45cc03e3c49831a08";
@@ -23,8 +24,11 @@ class Zendesk{
 
     }
 
-    protected function sunshineAuth($curl, $url){
-        curl_setopt( $curl, CURLOPT_URL, $this->ss_baseUrl.$this->ss_apiID."/$url" );
+    protected function sunshineAuth($curl, $url, $forceUrl = false){
+
+        $urlOK = !$forceUrl ? $this->baseUrl : $forceUrl;
+
+        curl_setopt( $curl, CURLOPT_URL, $urlOK.$this->ss_apiID."/$url" );
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, "$this->ss_keyID:$this->ss_secret");
     }
@@ -94,6 +98,33 @@ class Zendesk{
                 break;
             case "sunshine":
                 $this->sunshineAuth($ch, $url);
+                break;
+        }
+
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch,CURLOPT_POST, 1);
+        curl_setopt($ch,CURLOPT_POSTFIELDS, json_encode($arr));
+        curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );
+        
+        $data = curl_exec( $ch );
+        $status = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+        
+        curl_close( $ch );
+        
+        return array( 'response' => $status, 'data' => json_decode($data) );
+    }
+    
+    public function postDataV1( $url, $arr, $app = 'zendesk' ){
+        
+        $ch = curl_init();
+        
+        switch( $app ){
+            case "zendesk":
+                $this->zendeskAuth($ch, $url);
+                break;
+            case "sunshine":
+                $this->sunshineAuth($ch, $url, "https://atelierdehoteles.zendesk.com/sc/v1.1/apps/");
                 break;
         }
 
@@ -411,6 +442,7 @@ class Zendesk{
         return $id;
     }
     
+    
     public function addComment( $id, $tktData ){
         
         $tkt = json_encode( $tktData );
@@ -506,7 +538,7 @@ class Zendesk{
         return $uploadToken;  
     }
 
-
+ 
     // START SUNSHINE
 
     protected function ss_getChatId( $ticket ){
@@ -558,13 +590,10 @@ class Zendesk{
         return false;
     }
 
-    public function ss_sendMessage( $ticket, $content, $override = false ){
+    public function ss_sendMessage( $ticket, $content, $user = false, $override = false ){
         
-        $chatId = $this->ss_getChatId($ticket);
+        $chatId = $this->getConvId($ticket);
 
-        if( !$chatId ){
-            return false;
-        }
 
         $params = [
             "author" => [
@@ -578,9 +607,9 @@ class Zendesk{
             $params['override'] = $override;
         }
 
-        $result = $this->postDataNew( "conversations/".$chatId[0]."/messages", $params, 'sunshine' );
+        $result = $this->postDataNew( "conversations/".$chatId."/messages", $params, 'sunshine' );
         
-        return $result;
+        return ["result" => $result, "params" => $params, "convId" => $chatId];
     }
 
     public function ss_sendNotification( $dest, $text ){
@@ -678,6 +707,72 @@ class Zendesk{
         
         return $id;
       
+    }
+
+    public function changeRecipient( $ticket, $recipient ){
+        $params = ["ticket" => ["recipient" => $recipient] ];
+        
+        return $this->putData( $this->baseUrl."/api/v2/tickets/".$ticket, $params );
+    }
+
+    public function getConvId( $ticket ){
+        
+        $result = $this->getData( "api/v2/tickets/$ticket/audits" );
+        $data = json_decode(json_encode($result['data']->audits), true);
+
+        $convId = null;
+
+        foreach ($data as $key => $value) {
+            if( $value['events']){
+                foreach( $value['events'] as $event => $ev ){
+                    if( $ev['type'] == 'ChatStartedEvent' ){
+                            $convId = $ev['value']['conversation_id'];
+                            continue;
+                    }
+                }
+            }
+        }
+
+        return $convId;
+    }
+
+    public function templateWhats( $phone, $templateName, $lang, $components ){
+
+        $components = [
+            "type" => "body",
+            "parameters" => [
+                [
+                    "type" => "text",
+                    "text" => "TEST 2"
+                ]
+            ]
+                ];
+
+        $params = [
+            "destination" => [
+              "integrationId" => $this->whatsNotifId,
+              "destinationId" => $phone
+            ],
+            "author" => [
+              "role" => "appMaker"
+          ],
+          "messageSchema" => "whatsapp",
+          "message" => [
+              "type" => "template",
+              "template" => [
+                  "name" => $templateName,
+                  "language" => [
+                      "policy" => "deterministic",
+                      "code" => $lang
+                  ],
+                  "components" => [
+                      $components
+                  ]
+              ]
+          ]
+        ];
+
+        $this->postDataV1( "notifications", $params, 'sunshine' );
     }
 
 

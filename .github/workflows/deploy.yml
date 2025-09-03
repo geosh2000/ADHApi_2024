@@ -1,0 +1,27 @@
+name: Deploy to Azure via FTP
+on:
+  push:
+    branches:
+      - main   # 👈 cámbialo si usas otra rama
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        local-dir: ./
+        server-dir: /site/wwwroot/testftp   # 👈 carpeta destino en Azure
+        exclude: |
+          **/.git*
+          **/.github/**
+          **/node_modules/**

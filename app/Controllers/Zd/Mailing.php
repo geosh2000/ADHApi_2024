@@ -75,38 +75,6 @@ class Mailing extends BaseController{
         // Enviar el PDF al navegador
         $dompdf->stream('documento.pdf', ['Attachment' => 1]); // 'Attachment' => 1 for download, 0 for inline view
     }
-
-    // PRINT HTML
-    // public function getConf( $params, $hotel, $lang = 'english' ){
-
-    //     $params = [
-    //         "data"  => [
-    //             'conf_number'   =>  '392827',
-    //             'main_guest'    =>  'Juan Pablo de Zulueta Razo',
-    //             'date_in'       =>  '2024/05/18',
-    //             'time_in'       =>  '15:00',
-    //             'date_out'      =>  '2024/05/19',
-    //             'time_out'      =>  '12:00',
-    //             'room_code'     =>  'AXJRXK',
-    //             'room_name'     =>  'Junior Suite King',
-    //             'adults'        =>  2,
-    //             'children'      =>  0,
-    //             'payment_type'  =>  'Paga a la llegada',
-    //             'currency'      =>  'MXN',
-    //             'total'         =>  "11,473.50",
-    //             'notes'         =>  '-',
-    //             'xld_policy'    =>  '-'
-    //         ],
-    //         "params" => [
-    //             'ROOM TYPE'     =>  false,
-    //         ]
-    //     ];
-        
-    //     // Reemplaza las variables en el HTML con valores específicos
-    //     $html = $this->buildConfData($params, $hotel, $lang);
-
-    //     echo $html;
-    // }
     
     // PRINT HTML
     public function getConf(  ){
@@ -254,8 +222,24 @@ class Mailing extends BaseController{
         $params['data']['time_in'] = isset($params['data']['time_in']) && $params['data']['time_in'] !== '' ? $params['data']['time_in'] : '15:00';
         $params['data']['time_out'] = isset($params['data']['time_out']) && $params['data']['time_out'] !== '' ? $params['data']['time_out'] : '12:00';
 
+
         // Revisa el canal
-        $params['data']['rsv_channel'] = ($params['data']['rsv_channel'] ?? 'rsv_chan_direct') === 'rsv_chan_direct' ? 'ATELIERdeHoteles.com!' : 'Atelier de Hoteles';
+        $chan = $params['data']['rsv_channel'] ?? 'rsv_chan_direct';
+        switch($params['data']['rsv_channel']){
+            case 'rsv_chan_direct':
+                $params['data']['rsv_channel'] = 'ATELIERdeHoteles.com!';
+                break;
+            case 'rsv_chan_belong':
+                $params['data']['rsv_channel'] = 'BELONG Atelier de Hoteles';
+                break;
+            case 'rsv_chan_freebies':
+                $params['data']['rsv_channel'] = 'FREEBIES Atelier de Hoteles';
+                break;
+            default:
+                $params['data']['rsv_channel'] = 'Atelier de Hoteles';
+                break;
+
+        }
         
         // Revisa children
         $params['data']['children'] = isset($params['data']['children']) ? ($params['data']['children'] == "" ? "0" : $params['data']['children']) : $params['data']['children'];
@@ -314,9 +298,13 @@ class Mailing extends BaseController{
         }
 
         // Calcular XLD Policy
-        if( $params['data']['rsv_channel'] != 'ATELIERdeHoteles.com!' ){
+        if( $chan == 'rsv_chan_other' ){
             $params['data']['xld_policy'] = $fileLang == 'esp' ? "Por favor, verifica con tu agencia las políticas de cambios y cancelaciones aplicables a tu reserva" : "Please check with your agency regarding the change and cancellation policies applicable to your reservation.";              
-        }else{
+        }else if ($chan == 'rsv_chan_belong') {
+            $params['data']['xld_policy'] = $fileLang == 'esp' ? "En caso de cancelación de estancias con noches gratis, el agente de viajes podrá realizarlo hasta 15 días antes de la fecha de llegada sin penalidad, por lo que las noches serán restablecidas en la cuenta. Las cancelaciones después de este periodo están sujetas a penalidad causando una pérdida de las noches gratis canjeadas para la estancia." : "In the event of a cancellation for stays with free nights, the travel agent may cancel up to 15 days prior to the arrival date without penalty, and the nights will be reinstated to the account. Cancellations made after this period are subject to a penalty, resulting in the loss of the free nights redeemed for the stay.";              
+        }else if ($chan == 'rsv_chan_freebies') {
+            $params['data']['xld_policy'] = $fileLang == 'esp' ? "En caso de cancelación de estancias con noches gratis, el agente de viajes podrá realizarlo hasta 15 días antes de la fecha de llegada sin penalidad, por lo que las noches serán restablecidas en la cuenta. Las cancelaciones después de este periodo están sujetas a penalidad causando una pérdida de las noches gratis canjeadas para la estancia." : "In the event of a cancellation for stays with free nights, the travel agent may cancel up to 15 days prior to the arrival date without penalty, and the nights will be reinstated to the account. Cancellations made after this period are subject to a penalty, resulting in the loss of the free nights redeemed for the stay.";              
+        }else if ($chan == 'rsv_chan_direct' || $chan == 'rsv_chan_grupos') {
             switch( $params['data']['xld_policy'] ){
                 case "policy_48_hrs_25":
                     $params['data']['xld_policy'] = $fileLang == 'esp' ? "Cancelación gratuita hasta 2 días antes de la llegada. Entre 0 y 2 días antes de la llegada, se aplica una penalidad del 25%" : "Free cancellation up to 2 days before arrival. Between 0 and 2 days before arrival, a 25% penalty applies";
@@ -331,7 +319,7 @@ class Mailing extends BaseController{
                     $params['data']['xld_policy'] = "-";
                     break;
                 case "policy_auto":
-                    $params['data']['xld_policy'] = $this->getPenalties($params['query']);
+                    $params['data']['xld_policy'] = $this->getPenalties($params['query'], $params['data']['payment_type']);
                     break;
                 default:
                     $params['data']['xld_policy'] = "-";
@@ -382,13 +370,13 @@ class Mailing extends BaseController{
         // ISA
         switch( $params['data']['isa'] ){
             case "hotel_atpm":
-                $params['data']['isa'] = $fileLang == 'esp' ? "$ 31.12 MX (pesos mexicanos) por persona, por noche" : "$31.12 MXN (Mexican pesos) per person, per night";
+                $params['data']['isa'] = $fileLang == 'esp' ? "$34 MX (pesos mexicanos) por persona, por noche" : "$34 MXN (Mexican pesos) per person, per night";
                 break;
             case "hotel_olcp":
-                $params['data']['isa'] = $fileLang == 'esp' ? "$ 74 MX (pesos mexicanos) por habitación, por noche" : "$ 74 MXN (Mexican pesos) per room, per night";
+                $params['data']['isa'] = $fileLang == 'esp' ? "$79.20 MX (pesos mexicanos) por habitación, por noche" : "$79.20 MXN (Mexican pesos) per room, per night";
                 break;
             default:
-                $params['data']['isa'] = $fileLang == 'esp' ? "$ 31.12 MX (pesos mexicanos) por persona, por noche" : "$31.12 MXN (Mexican pesos) per person, per night";
+                $params['data']['isa'] = $fileLang == 'esp' ? "$34 MX (pesos mexicanos) por persona, por noche" : "$34 MXN (Mexican pesos) per person, per night";
                 break;
         }
         
@@ -413,8 +401,17 @@ class Mailing extends BaseController{
         return $html;
     }
 
-    protected function getPenalties( $filter ){
+    protected function getPenalties( $filter, $pago ){
         $db = \Config\Database::connect('production');
+
+        if( $pago == 'pago_total' ){
+            $text = [
+                "esp" => "Se aceptan cambios en la reservación. En caso de que la tarifa haya cambiado, se deberá pagar la diferencia al momento de solicitar el cambio. Una vez realizada la reservación, no se aceptan reembolso por no shows, llegadas anticipadas y/o cancelaciones.",
+                "eng" => "Changes to the reservation are accepted, however rate differences may apply. Once booked, no refund applies for no-shows, early departures and/or cancellations."
+            ];
+    
+            return $text[strtolower($filter['lang'])];
+        }
 
         $builder = $db->table('policies_xld');
 

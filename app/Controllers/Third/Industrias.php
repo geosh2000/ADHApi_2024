@@ -58,4 +58,28 @@ class Industrias extends BaseController
             return $this->response->setJSON(['error' => $e->getMessage()]);
         }
     }
+
+    public function test()
+    {
+        // $client = \Config\Services::curlrequest();
+
+        // Aquí se agrega 'verify' => false
+        $client = \Config\Services::curlrequest([
+            'verify' => false // convierte a ruta absoluta
+        ]);
+
+        try {
+            $response = $client->get('https://strapi.grupobd.mx/items/pagina');
+            $data = json_decode($response->getBody(), true);
+
+            // Devuelve JSON
+            gg_response(200, ["msg" => "Reservation details retrieved successfully.", "data" => $data]);
+
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'error' => true,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

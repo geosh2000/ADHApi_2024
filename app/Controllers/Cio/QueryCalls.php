@@ -87,6 +87,7 @@ class QueryCalls extends BaseController {
             ->whereIn("servicio_campana", $queue)
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
+            ->where("escenario != 'Encuesta'")
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
                 ->orGroupStart()
@@ -102,6 +103,7 @@ class QueryCalls extends BaseController {
             ->whereIn("servicio_campana", $queue)
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
+            ->where("escenario != 'Encuesta'")
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
                 ->orGroupStart()
@@ -144,6 +146,7 @@ class QueryCalls extends BaseController {
             ->where("disposicion_agente !=", "")
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
+            ->where("escenario != 'Encuesta'")
             ->where("Fecha >=", "20240501")
             ->whereIn("servicio_campana", $queue)
             ->groupStart()
@@ -191,6 +194,7 @@ class QueryCalls extends BaseController {
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
             ->where("Fecha >=", "20240501")
+            ->where("escenario != 'Encuesta'")
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
                 ->orGroupStart()
@@ -231,6 +235,7 @@ class QueryCalls extends BaseController {
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
             ->where("Fecha >=", "20240501")
+            ->where("escenario != 'Encuesta'")
             ->whereIn("servicio_campana", $queue)
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
@@ -270,6 +275,7 @@ class QueryCalls extends BaseController {
         $builder->select($select)
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("desde != 5370")
+            ->where("escenario != 'Encuesta'")
             ->where("Fecha >=", "20240501")
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
@@ -310,6 +316,7 @@ class QueryCalls extends BaseController {
             ->whereNotIn("disposicion",['System Disconnected' , 'Abandoned ringing', 'Abandoned in IVR'])
             ->whereNotIn("tipo_llamada", ['Outbound' , 'External'])
             ->where("escenario !=", 'default bridge scenario')
+            ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
             ->where("destino_original !=", '')
             ->where("Fecha BETWEEN '$start' AND '$end'")
@@ -323,6 +330,7 @@ class QueryCalls extends BaseController {
             ->whereNotIn("disposicion",['System Disconnected' , 'Abandoned ringing', 'Abandoned in IVR'])
             ->whereNotIn("tipo_llamada", ['Outbound' , 'External'])
             ->where("escenario !=", 'default bridge scenario')
+            ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
             ->where("destino_original !=", '')
             ->where("Fecha BETWEEN '$start' AND '$end'")
@@ -335,6 +343,7 @@ class QueryCalls extends BaseController {
             ->whereNotIn("disposicion",['System Disconnected' , 'Abandoned ringing', 'Abandoned in IVR'])
             ->whereNotIn("tipo_llamada", ['Outbound' , 'External'])
             ->where("escenario !=", 'default bridge scenario')
+            ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
             ->where("destino_original !=", '')
             ->where("Fecha BETWEEN '$start' AND '$end'")
@@ -387,6 +396,77 @@ class QueryCalls extends BaseController {
         $lu = $res->getResult('array')[0];
 
         return $lu['LastUpdate'];
+    }
+
+    public function calls_yearly( $queue = "Voz_Reservas", $start = "weekstart", $end = "weekend" )
+    {
+        $lu = $this->getLastUpdate();
+        $builder = $this->db->table('llamadas_cio');
+
+        $currentYear = date('Y');
+        $select = "CONCAT(YEAR(Fecha), '-', LPAD(MONTH(Fecha), 2, '0')) AS Fecha,
+        CONCAT(YEAR(Fecha), '-', LPAD(MONTH(Fecha), 2, '0')) AS FechaGroup,
+            COUNT(IF(disposicion='System Disconnected',1,NULL)) as FDH,
+            COUNT(IF(disposicion LIKE 'calle%',1,NULL)) as Answered,
+            COUNT(IF(disposicion IN ('Abandoned ringing','Abandoned in IVR'),1,NULL)) as EarlyAbandon,
+            COUNT(IF(disposicion = 'Abandoned in queue',1,NULL)) as Abandon,
+            COUNT(IF(disposicion LIKE 'transferred%',1,NULL)) as Transferida,
+            COUNT(IF(disposicion LIKE 'calle%',1,NULL)) 
+                + COUNT(IF(disposicion = 'Abandoned in queue',1,NULL)) + COUNT(IF(disposicion LIKE 'transferred%',1,NULL)) as totalLlamadas,
+            COUNT(IF(TIME_TO_SEC(tiempo_cola) + TIME_TO_SEC(marcado_timbrando)<20 AND disposicion IN ('Caller terminated', 'Callee terminated'),1,null)) as inSla,
+            CAST(COUNT(IF(TIME_TO_SEC(tiempo_cola) + TIME_TO_SEC(marcado_timbrando)<20 AND disposicion IN ('Caller terminated', 'Callee terminated'),1,null))/(COUNT(IF(disposicion LIKE 'calle%' OR disposicion = 'Abandoned in queue' OR disposicion LIKE 'transferred%',1,NULL))) * 100 as DECIMAL(10,2)) as sla,
+            CAST(COUNT(IF(disposicion = 'Abandoned in queue',1,NULL))/(COUNT(IF(disposicion LIKE 'calle%' OR disposicion = 'Abandoned in queue' OR disposicion LIKE 'transferred%',1,NULL))) * 100 as DECIMAL(10,2)) as Abandon_,
+            CAST(AVG(IF(disposicion LIKE 'calle%', time_to_sec(tiempo_en_espera)+time_to_sec(duracion_hablada),0)) as DECIMAL(5,2)) as AHT,
+            CAST(AVG(IF(disposicion LIKE 'calle%', time_to_sec(tiempo_cola)+time_to_sec(marcado_timbrando), 0)) as DECIMAL(5,2)) as ASA";
+
+        $builder->select($select)
+            ->whereIn("servicio_campana", explode(',', $queue))
+            ->where("YEAR(Fecha)", $currentYear)
+            ->where("desde !=", 5370)
+            ->where("escenario !=", 'Encuesta')
+            ->groupStart()
+                ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
+                ->orGroupStart()
+                    ->where("tipo_llamada",'Internal')
+                    ->where("ivr !=", '')
+                ->groupEnd()
+            ->groupEnd()
+            ->groupBy(["FechaGroup"])
+            ->orderBy("Fecha", "ASC");
+
+        $result = $builder->get();
+        $response = $result->getResult('array');
+
+        $builder->select($select)
+            ->whereIn("servicio_campana", explode(',', $queue))
+            ->where("YEAR(Fecha)", $currentYear)
+            ->where("desde != 5370")
+            ->where("escenario != 'Encuesta'")
+            ->groupStart()
+                ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
+                ->orGroupStart()
+                    ->where("tipo_llamada",'Internal')
+                    ->where("ivr !=", '')
+                ->groupEnd()
+            ->groupEnd()
+            ->groupBy(["FechaGroup"])
+            ->orderBy("Fecha", "ASC");
+        $resultTotals = $builder->get();
+        $responseTotals = $resultTotals->getResult('array');
+
+        $params = [
+            "year" => $currentYear,
+            "queue" => explode(',', $queue),
+            "inicio" => $start,
+            "fin" => $end   
+        ];
+
+        return view('Cio/db-chart-yearly', [
+            'data' => $response,
+            "params" => $params,
+            "lastUpdate" => $lu,
+            'totals' => $responseTotals[0] ?? []
+        ]);
     }
 
    

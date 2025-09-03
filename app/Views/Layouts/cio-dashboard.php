@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KFTBR7P8');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
@@ -71,6 +78,9 @@
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFTBR7P8"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <nav class="navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Dashboard</a>
@@ -87,17 +97,9 @@
 
                     <!-- KPIS -->
                     <h4>Kpis</h4><br>
-                    <a href="<?= base_url('cio/dashboard/calls/Voz_Reservas') ?>" class="sidebar-menu-item">
-                        <i class="material-icons sidebar-menu-icon">hotel</i>
-                        Reservas
-                    </a><br>
-                    <a href="<?= base_url('cio/dashboard/calls/Voz_Grupos') ?>" class="sidebar-menu-item">
-                        <i class="material-icons sidebar-menu-icon">diversity_3</i>
-                        Grupos
-                    </a><br>
                     <a href="<?= base_url('cio/dashboard/calls/Voz_Reservas,Voz_Grupos') ?>" class="sidebar-menu-item">
-                        <i class="material-icons sidebar-menu-icon">all_inclusive</i>
-                        Todo
+                        <i class="material-icons sidebar-menu-icon">call</i>
+                        Llamadas
                     </a><br>
                     <a href="<?= base_url('cio/dashboard/callJourney') ?>" class="sidebar-menu-item">
                         <i class="material-icons sidebar-menu-icon">air</i>
@@ -134,6 +136,18 @@
                     <a href="<?= base_url('cio/dashboard/surveys/Voz_Grupos') ?>" class="sidebar-menu-item">
                         <i class="material-icons sidebar-menu-icon">app_registration</i>
                         Grupos
+                    </a>
+                    <hr>
+
+                    <!-- Actividad de Agentes -->
+                    <h4>Actividad Agentes</h4><br>
+                    <a href="<?= base_url('cio/dashboard/activity/live') ?>" class="sidebar-menu-item">
+                        <i class="material-icons sidebar-menu-icon">timeline</i>
+                        En Vivo
+                    </a><br>
+                    <a href="<?= base_url('cio/dashboard/activity/monthly') ?>" class="sidebar-menu-item">
+                        <i class="material-icons sidebar-menu-icon">bar_chart</i>
+                        Mensual
                     </a>
                     <hr>
                 </div>

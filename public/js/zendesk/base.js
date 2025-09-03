@@ -28,6 +28,7 @@ class zdFields {
     static adultos       = 'ticket.customField:custom_field_26261071536532';         // Adultos
     static allowChild    = 'ticket.customField:custom_field_26573918597908';         // Permite Menores
     static childs        = 'ticket.customField:custom_field_26261086769812';         // Children
+    static children      = 'ticket.customField:custom_field_26261086769812';         // Children
     static mostrarMontos = 'ticket.customField:custom_field_26665095543572';         // Mostrar Montos
     static tipoPago      = 'ticket.customField:custom_field_26261185344916';         // Tipo de Pago
     static monto         = 'ticket.customField:custom_field_26261224650388';         // Monto

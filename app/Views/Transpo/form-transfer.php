@@ -137,7 +137,7 @@
                 <h4><?php echo ($lang === 'esp') ? 'Detalles de llegada:' : 'Arrival details:'; ?></h4>
                 <div class="form-group">
                     <label for="arrival-date"><?php echo ($lang === 'esp') ? 'Fecha de llegada:' : 'Arrival date:'; ?></label>
-                    <input type="date" class="form-control" id="arrival-date"  name="arrival-date" <?php if( isset($rsva['ENTRADA']) && $rsva['ENTRADA']['date'] != null): ?> value="<?=$rsva['ENTRADA']['date'] ?>" readonly <?php endif; ?> required>
+                    <input type="date" class="form-control" id="arrival-date"  name="arrival-date" <?php if( isset($rsva['ENTRADA']) && $rsva['ENTRADA']['date'] != null): ?> value="<?=$rsva['ENTRADA']['date'] ?>" <?php endif; ?> <?php if( isset($rsva['ENTRADA']) && $rsva['ENTRADA']['time'] != null): ?> readonly <?php endif; ?> required>
                 </div>
                 <div class="form-group">
                     <label for="arrival-time"><?php echo ($lang === 'esp') ? 'Hora de llegada del vuelo:' : 'Flight arrival time:'; ?></label>
@@ -158,7 +158,7 @@
                 <h4><?php echo ($lang === 'esp') ? 'Detalles de salida:' : 'Departure details:'; ?></h4>
                 <div class="form-group">
                     <label for="departure-date"><?php echo ($lang === 'esp') ? 'Fecha de salida:' : 'Departure date:'; ?></label>
-                    <input type="date" class="form-control" id="departure-date"  name="departure-date" <?php if( isset($rsva['SALIDA']) && $rsva['SALIDA']['date'] != null): ?> value="<?=$rsva['SALIDA']['date'] ?>" readonly <?php endif; ?> required>
+                    <input type="date" class="form-control" id="departure-date"  name="departure-date" <?php if( isset($rsva['SALIDA']) && $rsva['SALIDA']['date'] != null): ?> value="<?=$rsva['SALIDA']['date'] ?>" <?php endif; ?> <?php if( isset($rsva['SALIDA']) && $rsva['SALIDA']['time'] != null): ?> readonly <?php endif; ?> required>
                 </div>
                 <div class="form-group">
                     <label for="departure-time"><?php echo ($lang === 'esp') ? 'Hora de salida del vuelo:' : 'Flight departure time:'; ?></label>

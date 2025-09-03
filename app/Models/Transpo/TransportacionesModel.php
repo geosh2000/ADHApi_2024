@@ -60,7 +60,7 @@ class TransportacionesModel extends BaseModel
         if (!empty($guest)) {
             $this->builder->like('guest', $guest);
         } elseif (!empty($folio)) {
-            $this->builder->where('folio', $folio);
+            $this->builder->like('folio', $folio);
         } elseif (!empty($correo)) {
             $this->builder->like('correo', $correo);
         } else {
@@ -81,6 +81,7 @@ class TransportacionesModel extends BaseModel
             }
 
         }
+
 
         $this->builder->orderBy('guest');
 
@@ -391,9 +392,9 @@ class TransportacionesModel extends BaseModel
         hotel as CONTRATANTE,IF(tipo='ENTRADA','AEROPUERTO',hotel) as ORIGEN, flight as `NO. VUELO`,IF(tipo='SALIDA','AEROPUERTO',hotel) as DESTINO,
         NULL as `POSIBLE OPERADOR`, NULL as UNIDAD,guest as `NOMBRE PASAJERO`,NULL as OBSERVACIONES,NULL as ZONA,NULL as TERMINAL,NULL as AREA,NULL as FOLIO,
         CONCAT(folio,'-',item) as LOCALIZADOR, NULL as `COBRO PESOS` ,NULL as `COBRO USD`, NULL as `PRECIO CON IVA` , NULL as APOYO ,NULL as `COMISION VENTAS`, 
-        NULL as `COMISION DRIVERS`,NULL as `COMISION OPERDOR`,NULL as OBSEVACIONES,NULL as CUENTA";
-        
-        return $this->builder->select($select)->get()->getResultArray();
+        NULL as `COMISION DRIVERS`,NULL as `COMISION OPERDOR`,NULL as OBSEVACIONES,NULL as CUENTA, phone as TELEFONO, airline as AEROLINEA";
+
+        return $this->builder->select($select)->orderBy('date', 'ASC')->orderBy('folio', 'ASC')->get()->getResultArray();
     }
 
 

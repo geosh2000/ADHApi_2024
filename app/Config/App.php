@@ -187,7 +187,7 @@ class App extends BaseConfig
         // we are currently running an automated test suite, so that
         // we don't overwrite live data on accident.
         if (ENVIRONMENT === 'development') {
-            $this->baseURL = 'http://localhost:8888/adhApi/';
+            $this->baseURL = 'http://localhost:8888/';
             $this->indexPage = 'index.php';
         }
     }

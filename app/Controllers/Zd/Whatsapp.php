@@ -32,8 +32,14 @@ class Whatsapp extends BaseController{
   
         gg_response(200, $result); 
     }
+    
+    public function getChats( $ticket ){
+        $result = $this->zd->ss_getMessages($ticket, false);
+  
+        gg_response(200, $result); 
+    }
 
-    protected function getActiveConversation( $user ){
+    public function getActiveConversation( $user ){
         $convs = $this->zd->ss_listConversations( $user );
 
         if( !$convs ){
@@ -57,7 +63,7 @@ class Whatsapp extends BaseController{
 
 
     public function test(){
-        
+         
         $content = [
             "type" => "text",
             "text" => "Envío de menú de comida"
@@ -90,7 +96,7 @@ class Whatsapp extends BaseController{
             ]
         ];
 
-        $result = $this->zd->ss_sendMessage( 160722, $content, $override );
+        $result = $this->zd->ss_sendMessage( 285645, $content, $override );
 
         gg_response(200, ["data" => $result]);
 

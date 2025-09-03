@@ -21,8 +21,8 @@ class CrsModel extends BaseModel
         $builder->select("CASE WHEN htl.Name LIKE '%atelier playa mujeres%' THEN 'ATELIER' 
                             WHEN htl.Name LIKE '%Óleo Cancún Playa%' THEN 'OLEO' 
                             ELSE htl.Name END as Hotel");
-        $builder->select('ReservationNumber');
-        $builder->select('ReservationNumber as rsvPms');
+        $builder->select("CASE WHEN ReservationNumber IS NULL THEN CONCAT('C-',ReservationId) ELSE ReservationNumber END as ReservationNumber");
+        $builder->select("CASE WHEN ReservationNumber IS NULL THEN CONCAT('C-',ReservationId) ELSE ReservationNumber END as rsvPms");
         $builder->select('ReservationId as rsvCrs');
         $builder->select('DateFrom');
         $builder->select('DateTo');

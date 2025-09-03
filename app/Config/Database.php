@@ -30,7 +30,7 @@ class Database extends Config
         'username'     => 'cycoasis_apirest_admin',
         'password'     => '@8370Apirest',
         'database'     => 'cycoasis_apirest',
-        'DBDriver'     => '',
+        'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,
         'DBDebug'      => true,
@@ -93,6 +93,27 @@ class Database extends Config
         'username'     => 'CVReports3',
         'password'     => '7ZUMPHoLR7$8',
         'database'     => 'Atelier_Front_CRS',
+        'DBDriver'     => 'SQLSRV',
+        'DBPrefix'     => '',
+        'pConnect' => false,
+        'DBDebug'  => (ENVIRONMENT !== 'production'),
+        'cacheOn'  => false,
+        'cacheDir' => '',
+        'charset'  => 'utf8',
+        'DBCollat' => 'utf8_general_ci',
+        'swapPre'  => '',
+        'encrypt'  => true, // Se recomienda utilizar el cifrado SSL para conexiones seguras a Azure SQL Database
+        'compress' => false,
+        'strictOn' => false,
+        'failover' => [],
+    ];
+
+    public array $new_adh_crs = [
+        'DSN'          => '',
+        'hostname'      => 'tcp:atelier-hoteles.database.windows.net', // Aquí se especifica el protocolo TCP para Azure SQL Database
+        'username'     => 'CVReports3',
+        'password'     => '7ZUMPHoLR7$8',
+        'database'     => 'Atelier_Reservations',
         'DBDriver'     => 'SQLSRV',
         'DBPrefix'     => '',
         'pConnect' => false,

@@ -5,11 +5,23 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Registro::index');
+$routes->get('/', 'Rsv\Quote::framedQuote');
+$routes->get('test', 'TestController::index');
 $routes->get('logout', 'Registro::logout');
+
+// GraphQL
+// $routes->post('graphql', 'GraphQL::index');
+$routes->post('graphql', 'GraphqlController::index');
+$routes->options('graphql', 'GraphqlController::index'); // CORS preflight
 
 $routes->group('third', function($routes){
     $routes->get('industrias', 'Third\Industrias::index');
+    $routes->get('test', 'Third\Industrias::test');
+});
+
+// CMS
+$routes->group('cms', function($routes){
+    $routes->get('mailTranspo', 'Cms\StrapiController::getTranspoMailContent');
 });
 
 $routes->group('reports', function($routes){
@@ -29,10 +41,14 @@ $routes->group('cio', function($routes){
     $routes->get('llamadas', 'Cio\UploadCalls::mostrarFormulario');
     $routes->post('llamadas/cargar', 'Cio\UploadCalls::cargarCSV');
     $routes->get('load', 'Cio\UploadCalls::loadCSV');
+    $routes->get('agentActivity', 'Cio\AgentActivity::loadCSV');
+    $routes->get('agentActivityLocal', 'Cio\AgentActivity::loadCSVLocal');
     
     $routes->group('query', function($routes){
         $routes->get('todayCalls', 'Cio\QueryCalls::llamadasDia');
     });
+
+    // Rutas para actividad de agentes en el dashboard CIO
     
     $routes->group('dashboard', function($routes){
         $routes->get('', 'Cio\QueryCalls::test');
@@ -52,6 +68,11 @@ $routes->group('cio', function($routes){
         $routes->get('calls', 'Cio\QueryCalls::calls');
         $routes->get('calls/(:any)', 'Cio\QueryCalls::calls/$1/');
         $routes->get('calls/(:any)/(:any)/(:any)', 'Cio\QueryCalls::calls/$1/$2/$3');
+        $routes->get('yearly/calls', 'Cio\QueryCalls::calls_yearly');
+        $routes->get('yearly/calls/(:any)', 'Cio\QueryCalls::calls_yearly/$1/');
+        $routes->get('yearly/calls/(:any)/(:any)/(:any)', 'Cio\QueryCalls::calls_yearly/$1/$2/$3');
+        $routes->get('activity/monthly', 'Cio\AgentActivity::monthly');
+        $routes->get('activity/live', 'Cio\AgentActivity::live');
     });
 });
 
@@ -63,7 +84,9 @@ $routes->group('public', function($routes){
 });
 
 $routes->group('cc', function($routes){
+    $routes->get('', 'Rsv\Quote::framedQuote');
     $routes->get('cotizador', 'Rsv\Quote::framedQuote');
+    $routes->get('test', 'Rsv\Quote::test');
 });
 
 $routes->group('mailing', function($routes){
@@ -74,6 +97,12 @@ $routes->group('mailing', function($routes){
 // Transportacion
 // $routes->group('transpo', function($routes){
 // $routes->group('transpo', function($routes){
+$routes->group('transpoTest', function($routes){
+    $routes->get('nextAll', 'Transpo\TransportacionController::exportNextAll');
+    $routes->get('expotNextDay', 'Transpo\TransportacionController::exportNextDay');
+});
+
+
 $routes->group('transpo', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'Transpo\TransportacionController::index');
     $routes->get('create', 'Transpo\TransportacionController::create');
@@ -93,7 +122,9 @@ $routes->group('transpo', ['filter' => 'authFilter'], function($routes){
     $routes->post('duplicate/(:num)', 'Transpo\TransportacionController::duplicateService/$1');
     $routes->post('sendNewRequest/(:num)', 'Transpo\TransportacionController::newMailRequest/$1');
     $routes->post('conf', 'Transpo\TransportacionController::confirmTranspoMail');
+    $routes->get('confPreview', 'Transpo\TransportacionController::transpoPreviewConf');
     $routes->get('expotNewQwt', 'Transpo\TransportacionController::exportNew');
+    $routes->get('exportNextDay', 'Transpo\TransportacionController::exportNextDay');
     $routes->post('confirmExport', 'Transpo\TransportacionController::exportNewConfirm');
     $routes->post('sendQwtServices', 'Transpo\TransportacionController::sendQwtConfirms');
     $routes->get('pendingConf', 'Transpo\TransportacionController::pendingConf');
@@ -109,6 +140,7 @@ $routes->group('zdapp', ['filter' => 'zendeskFilter'], function($routes){
     });
     $routes->group('transpo', function($routes){
         $routes->post('/', 'Zdapp\ZendeskAppController::transpo');
+        $routes->get('searchFolios/(:any)', 'Transpo\TransportacionController::search/$1');
     });
     $routes->group('quote', function($routes){
         $routes->post('/', 'Zdapp\ZendeskAppController::quote');
@@ -179,8 +211,10 @@ $routes->group('zd', function($routes){
         $routes->post('send/(:any)', 'Zd\Tickets::sendMsgToConv/$1');
         $routes->get('listConvs/(:any)', 'Zd\Whatsapp::listConversations/$1');
         $routes->get('getConversation/(:any)', 'Zd\Whatsapp::getConversation/$1');
+        $routes->get('getActiveConversation/(:any)', 'Zd\Whatsapp::getActiveConversation/$1');
         $routes->post('notify', 'Zd\Whatsapp::sendNotification');
         $routes->post('test', 'Zd\Whatsapp::test');
+        $routes->post('conv_id', 'Zd\Tickets::convid');
     });
     $routes->group('ticket', function($routes){
         $routes->get('search/(:any)', 'Zd\Tickets::searchQuery/$1');
@@ -195,14 +229,19 @@ $routes->group('zd', function($routes){
     $routes->post('webhook', 'Zd\Tickets::webhook');
     $routes->group('apps', function($routes){
         $routes->post('key', 'Zd\Tickets::getPublicKey');
+        $routes->post('key/(:num)', 'Zd\Tickets::getPublicKey/$1');
         $routes->post('installations', 'Zd\Tickets::installations');
         $routes->post('aud', 'Zd\Tickets::appAud');
     });
     $routes->group('config', function($routes){
         $routes->get('showForm/(:num)', 'Zd\Tickets::showForm/$1');
+        $routes->get('supportAddress', 'Zd\Config::supportAddress');
     });
     $routes->group('forms', function($routes){
         $routes->post('post-msg', 'Zd\Tickets::fromContactForm');
+    });
+    $routes->group('transpo', function($routes){
+        $routes->get('searchFolio/(:any)', 'Transpo\TransportacionController::findByFolio/$1');
     });
 });
 
@@ -240,6 +279,12 @@ $routes->group('login', function($routes){
     $routes->get('perm', 'Log\Login::showSessionData');
 });
 
+// Rutas Mailing
+$routes->group('mailing', function($routes){
+    $routes->post('buzon-sugerencias', 'Mailing\FormController::buzonSugerencias');
+    $routes->post('test', 'Mailing\FormController::sendTestEmail');
+});
+
 // Rutas protegidas por BearerToken
 $routes->group('auth', function($routes){
     $routes->group('log', ['filter' => 'verificarPermiso:dash_logs'], function($routes){
@@ -259,8 +304,8 @@ $routes->group('test', function($routes){
     $routes->get('cancel', 'Transpo\DatabaseController::testCancel');
 });
 
-// $routes->group('dashboard', ['filter' => 'DashboardFilter'], function($routes){
-//     $routes->get('usuario/crear', '\App\Controllers\Web\Usuario::create_user', ['as' => 'usuario.create_user']);
-//     $routes->get('usuario/test_password/(:num)', '\App\Controllers\Web\Usuario::test_password/$1', ['as' => 'usuario.test_pw']);
-//     $routes->get('peliculas', 'Pelicula::index', ['as' => 'pelicula.index']);
-// });
+$routes->group('pms', function($routes){
+    $routes->get('searchFolio/(:any)', 'Pms\PmsController::getRsvDetail/$1');
+});
+
+// Este archivo contiene rutas actualizadas hasta el 2025-07-02

@@ -315,6 +315,67 @@ class Tickets extends BaseController{
         
 
     }
+    
+    public function belongFormToClient( $data ){
+        
+        $ticket = $data['ticket'] ?? false;
+        
+        $result = $this->zd->getData( "api/v2/tickets/".$ticket );
+
+        $result['data'] = json_decode(json_encode($result['data']),true);
+
+        $texto = $result['data']['ticket']['description'];
+
+        // Patrones de expresiones regulares para extraer el nombre y el correo electrónico
+        $patron_nombre = '/Agente: (.*)\n/';
+        $patron_email = '/Correo: (.*)\n/';
+
+        // Variables para almacenar el nombre y el correo electrónico
+        $nombre = '';
+        $email = '';
+
+        // Buscar coincidencias utilizando expresiones regulares
+        if (preg_match($patron_nombre, $texto, $coincidencias_nombre)) {
+            $nombre = preg_replace('/(?<!^)([A-Z])/', ' $1', $coincidencias_nombre[1]);
+        }
+
+        if (preg_match($patron_email, $texto, $coincidencias_email)) {
+            $email = $coincidencias_email[1];
+        }
+
+        // Buscar Usuario
+        $userSearch = $this->zd->searchUserByMail($email);
+        if( strpos($userSearch['response'], '2') === 0 ){
+            $userSearch['data'] = json_decode(json_encode($userSearch['data']),true);
+            // gg_response(200, [$userSearch, $email]);
+            if( $userSearch['data']['count'] > 0){
+                $userId = $userSearch['data']['users'][0]['id'];
+            }else{
+                $newUser = $this->zd->crearUsuario($nombre, $email);
+                if( strpos($newUser['response'], '2') === 0 ){
+                    $newUser['data'] = json_decode(json_encode($newUser['data']),true);
+                    $userId = $newUser['data']['user']['id'];
+                }else{
+                    gg_response(400, ["error" => $newUser] );
+                }
+            }
+
+            $data = ["requester_id" => $userId];
+            $update = $this->zd->updateTicket($ticket, $data);
+            if( strpos($update['response'], '2') === 0 ){
+                $update['data'] = json_decode(json_encode($update['data']),true);
+                
+                gg_response($update['response'], [ "data" => $update['data']]); 
+            }else{
+                gg_response($update['response'], ["error" => "Error al crear usuario"] );
+            }
+        }else{
+            gg_response($userSearch['response'], ["error" => "Error al crear usuario"] );
+        }
+
+        
+
+    }
 
 
     public function showFields(){
@@ -409,6 +470,8 @@ class Tickets extends BaseController{
 
         $html = $zd->buildConfData($data['params'], str_replace("hotel_", "", $data['hotel']), $data['lang']);
 
+        array_push($data['tags'], "solve_conf_sent");
+
         switch( $type ){
             case "send":
                 $zd = new Zendesk();
@@ -418,7 +481,7 @@ class Tickets extends BaseController{
                         "public"        => true,
                         "html_body"     => $html,
                     ],
-                    "status"        => "solved",
+                    "status"        => "pending",
                     "tags"          => $data['tags']
                 ];
                 
@@ -484,12 +547,13 @@ class Tickets extends BaseController{
                 $dompdf->getCanvas()->scale(0.8, 0.8,0,0); 
 
                 // Guarda el PDF en el servidor
+                $confName = $data['hotel'] . '-' . preg_replace('/[^A-Za-z0-9_-]/', '_', $data['params']['data']['conf_number']) . '.pdf';
                 $output = $dompdf->output();
-                $filePath = WRITEPATH . 'pdf/' . $data['hotel'] . '-' . $data['params']['data']['conf_number'] . '.pdf';
+                $filePath = WRITEPATH . 'pdf/' . $confName;
                 file_put_contents($filePath, $output);
 
                 // Devuelve la URL del archivo guardado
-                return $this->response->setJSON(['pdf_url' => $data['hotel'] . '-' . $data['params']['data']['conf_number'] . '.pdf']);
+                return $this->response->setJSON(['pdf_url' => $confName]);
                 break;
         }
 
@@ -574,9 +638,8 @@ class Tickets extends BaseController{
         gg_response($result['response'], $result['data']);
     }
 
-    public function getPublicKey()
+    public function getPublicKey( $appId = 1057090 )
     {
-        $appId = 1057090;
         $result = $this->zd->getData( "/api/v2/apps/$appId/public_key.pem", true);
         
         echo $result['data'];
@@ -687,5 +750,88 @@ class Tickets extends BaseController{
         gg_response(200, $result['data']);
     }
 
+    public function changeRecipient( $data ){
+        
+        $ticket = $data['ticket'];
+        $recipient = $data['recipient'];
 
+        $result = $this->zd->changeRecipient($ticket, $recipient);
+
+        gg_response(200, $result['data']);
+    }
+
+    public function autoReplyVIPWhatsapp($data){
+ 
+        $ticket = $data['ticket'];
+        $user = $data['user'];
+        
+        $content = [
+            "type" => "text",
+            "text" => "¡Hola y gracias por contactar la *Línea VIP de ATELIER de Hoteles*!
+
+En este momento, el equipo se encuentra atendiendo a otros huéspedes, y su mensaje ha sido marcado como *importante* para darle respuesta en un *máximo de 15 minutos*.⏳
+
+_Esta versión de WhatsApp Business permite recibir documentos y fotografías; sin embargo, *no es posible visualizar tarjetas de contacto*. Por ello, se solicita compartir el correo electrónico y número telefónico de manera tradicional, ya sea en texto o mediante una fotografía._
+
+¡Muy pronto estarán en contacto con usted!
+
+*ATELIER de Hoteles*
+_Hospitalidad Hecha a Mano_"
+        ];
+
+        $result = $this->zd->ss_sendMessage( $ticket, $content, $user );
+
+        gg_response(200, ["data" => $result, "msg" => "Mensaje enviado"]);
+
+    }
+
+    public function listConversations($data){
+        $user = $data['user'];
+
+        $result = $this->zd->ss_listConversations( $user );
+        
+        // if( $result['response'] != 200 ){
+        //     return false;
+        // }
+        
+        gg_response(200, ["data" => $result['data'], "user" => $user]);
+    }
+
+    public function getUser( $data ){
+        $user = $data['user'];
+
+        $result = $this->zd->getUser( $user );
+
+        gg_response(200, ["data" => $result['data']]);
+    }
+
+    public function getAudits( $data ){
+        $ticket = $data['ticket'];
+
+        $result = $this->zd->getData( "api/v2/tickets/$ticket/audits" );
+
+        gg_response(200, ["data" => $result['data']]);
+    }
+
+    public function getConvId( $data ){
+        $ticket = $data['ticket'];
+
+        $result = $this->zd->getData( "api/v2/tickets/$ticket/audits" );
+        $data = json_decode(json_encode($result['data']->audits), true);
+
+        $convId = null;
+
+        foreach ($data as $key => $value) {
+            if( $value['events']){
+                foreach( $value['events'] as $event => $ev ){
+                    if( $ev['type'] == 'ChatStartedEvent' ){
+                            $convId = $ev['value']['conversation_id'];
+                            continue;
+                    }
+                }
+            }
+        }
+
+        gg_response(200, ["data" => $convId]);
+    }
 }

@@ -324,6 +324,7 @@
             
             // console.log( "ticketData", ticketData);
             startLoader(false);
+            console.log("Fields...", ticketData);
 
             client.request({
                 url: '/api/v2/tickets/' + ticket.ticket.id + '.json',

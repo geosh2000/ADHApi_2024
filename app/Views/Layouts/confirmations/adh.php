@@ -17,7 +17,7 @@
 <div style="margin: 0 auto; width: 720px;transform: scale(0.85625, 0.85625);transform-origin: left top;">
     <div style="background-color: black !important; margin: 0px; padding: 15px;">
         <div align="left" style="margin:0;padding:0 10px 0 20px;">
-            <img data-imagetype="External" src="https://glassboardengine.azurewebsites.net//assets/img/<?php echo $hotel == 'atpm' ? 'logo' : 'logoOleo' ; ?>.png" border="0" alt="Texto alternativo" title="Texto alternativo" style="display:block;width:105px;text-decoration:none;max-width:105px;border-width:0;border-style:none;"> 
+            <img data-imagetype="External" src="https://glassboardengine.azurewebsites.net/assets/img/<?php echo $hotel == 'atpm' ? 'logo' : 'logoOleo' ; ?>.png" border="0" alt="Texto alternativo" title="Texto alternativo" style="display:block;width:105px;text-decoration:none;max-width:105px;border-width:0;border-style:none;"> 
         </div>
     
     </div>

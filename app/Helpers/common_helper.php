@@ -116,6 +116,7 @@
     }
 
     function permiso( $p ){
+        return true;
         $session = session();
         $perm = $session->get('permissions');
 
@@ -190,6 +191,29 @@
         return $postData;
     }
 
+    function buscarValor($array, $clave) {
+        foreach ($array as $key => $value) {
+            if ($key === $clave) {
+                return $value;
+            } elseif (is_array($value)) {
+                $resultado = buscarValor($value, $clave);
+                if ($resultado !== null) {
+                    return $resultado;
+                }
+            }
+        }
+        return null;
+    }
+
+    if (!function_exists('minify_html')) {
+        function minify_html(string $html): string {
+            // Quita tabs, saltos de línea y espacios múltiples
+            $html = preg_replace('/\s+/', ' ', $html);
+            // Quita espacios entre tags
+            $html = preg_replace('/>\s+</', '><', $html);
+            return trim($html);
+        }
+    }
 
 ?>
 

@@ -57,6 +57,8 @@ abstract class BaseController extends Controller
         // Carga el helper common
         helper(['common']);
         helper(['database']);
+        helper(['markdown']);
+        helper(['strapi']);
 
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);

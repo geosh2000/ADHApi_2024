@@ -5,9 +5,9 @@ namespace App\Controllers\Transpo;
 use App\Models\Transpo\TransportacionesModel;
 use App\Models\Transpo\TranspoHistoryModel;
 use App\Controllers\BaseController;
-use App\Controllers\Zd\Mailing;
+
 use App\Libraries\Zendesk;
-use Config\Globals as templates;
+
 
 class TransportacionController extends BaseController
 {
@@ -86,13 +86,13 @@ class TransportacionController extends BaseController
         $data['folio'] = $folio;
         $data['title'] = "Transportaciones ADH";
 
-        return view('transpo/index', $data);
+        return view('Transpo/index', $data);
     }
 
     public function create()
     {
         // Mostrar formulario de creación
-        return view('transpo/edit', ['transpo' => []]);
+        return view('transpo/create', ['transpo' => []]);
     }
 
     public function store( $hasData = false, $data = [], $html = true)
@@ -196,13 +196,13 @@ class TransportacionController extends BaseController
             'flight_in' => $_POST['flight_in'] ?? null,
             'airline_in' => $_POST['airline_in'] ?? null,
             'pick_up_in' => $_POST['pick_up_in'] ?? null,
-            'precio_in' => $_POST['precio_in'] ?? $this->mapHotel($_POST['hotel'] ?? null) == 'ATELIER' ? 1213.71 : 470,
+            'precio_in' => $_POST['precio_in'] ?? $this->mapHotel($_POST['hotel'] ?? null) == 'ATELIER' ? 1350 : 470,
             'date_out' => $_POST['date_out'] ?? null,
             'time_out' => $_POST['time_out'] ?? null,
             'flight_out' => $_POST['flight_out'] ?? null,
             'airline_out' => $_POST['airline_out'] ?? null,
             'pick_up_out' => $_POST['pick_up_out'] ?? null,
-            'precio_out' => $_POST['precio_out'] ?? $this->mapHotel($_POST['hotel'] ?? null) == 'ATELIER' ? 1213.71 : 470,
+            'precio_out' => $_POST['precio_out'] ?? $this->mapHotel($_POST['hotel'] ?? null) == 'ATELIER' ? 1350 : 470,
             'user' => $_POST['user'] ?? null,
         ];
 
@@ -489,7 +489,7 @@ class TransportacionController extends BaseController
                 'time' => $this->request->getPost('arrival-time'),
                 'flight' => $this->request->getPost('arrival-flight-number'),
                 'airline' => $this->request->getPost('arrival-airline'),
-                'precio' => $this->request->getPost('hotel') == "ATELIER" ? 1213.71 : 470,
+                'precio' => $this->request->getPost('hotel') == "ATELIER" ? 1350 : 470,
                 'status' => $this->request->getPost('pago') == 'cortesia' ? 'CORTESÍA (CAPTURA PENDIENTE)' : 'LIGA PENDIENTE',
                 'phone' => $this->request->getPost('phone'),
                 'tickets' => $this->request->getPost('tickets') ?? "[]",
@@ -507,7 +507,7 @@ class TransportacionController extends BaseController
                 'flight' => $this->request->getPost('departure-flight-number'),
                 'airline' => $this->request->getPost('departure-airline'),
                 'pick_up' => $this->request->getPost('pickup-time'),
-                'precio' => $this->request->getPost('hotel') == "ATELIER" ? 1213.71 : 470,
+                'precio' => $this->request->getPost('hotel') == "ATELIER" ? 1350 : 470,
                 'status' => $this->request->getPost('pago') == 'cortesia' ? 'CORTESÍA (CAPTURA PENDIENTE)' : 'LIGA PENDIENTE',
                 'phone' => $this->request->getPost('phone'),
                 'tickets' => $this->request->getPost('tickets') ?? "[]",
@@ -908,7 +908,9 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
                 [ "id" => 28837284664596, "value" => $rsva[$rsva[0]['tipo'] == "ENTRADA" ? 0 : 1]['id'] ],
                 [ "id" => 28837240808724, "value" => $rsva[$rsva[0]['tipo'] == "SALIDA" ? 0 : 1]['id']]
             ],
-            "ticket_form_id" => 26597917087124
+            "ticket_form_id" => 26597917087124,
+            "tags" => ['recipient_changed'],
+            "recipient" => "transfers.".(strtolower($rsva[0]['hotel']) == 'atelier' ? 'atpm' : 'olcp')."@adh.com"
         ];
 
         $ticketId = $zd->newTicketSend($params);
@@ -1124,29 +1126,43 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
 
     }
 
-    public function confirmTranspoMail(){
+    public function transpoPreviewConf(){
+        return $this->confirmTranspoMail(true);
+    }
+
+    public function confirmTranspoMail( $preview = false ){
 
         $model = new TransportacionesModel();
 
-        if( !isset($_POST['id1']) || !isset($_POST['id2']) ){
-            $getIds = $model->getRoundIds(!isset($_POST['id1']) ? $_POST['id2'] : $_POST['id1']);
-            $id1 = $getIds[0];
-            $id2 = $getIds[1] ?? $getIds[0];
+        if( $preview ){
+            
+            $id1 = $this->request->getGet('id1');
+            $id2 = $this->request->getGet('id2');
+            $lang = $this->request->getGet('lang');
         }else{
-            $id1 = $_POST['id1'];
-            $id2 = $_POST['id2'];
+            if( !isset($_POST['id1']) || !isset($_POST['id2']) ){
+                $getIds = $model->getRoundIds(!isset($_POST['id1']) ? $_POST['id2'] : $_POST['id1']);
+                $id1 = $getIds[0];
+                $id2 = $getIds[1] ?? $getIds[0];
+            }else{
+                $id1 = $_POST['id1'];
+                $id2 = $_POST['id2'];
+            }
+            $lang = $_POST['lang'] ?? 0;
         }
-
+            
         $author = $_POST['author'] ?? 0;
         $authorId = $_POST['author_id'] ?? 0;
         $hasTicket = isset($_POST['ticket']);
         $ticket = $_POST['ticket'] ?? '';
-        $lang = $_POST['lang'] ?? 0;
         switch( $lang ){
             case 'es-419':
+            case 'esp':
+            case 'es':
                 $lang = 'esp';
                 break;
             case 'en-US':
+            case 'en':
                 $lang = 'eng';
                 break;
             default:
@@ -1189,7 +1205,32 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
             $id2 = 0;
         }
 
-        $html = view('transpo/mailing/confirmTranspo', ['data' => $rsva[0], 'transpo' => $transpo, 'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 'lang' => $lang == 'esp']);
+        $strapiCtrl = new \App\Controllers\Cms\StrapiController();
+        $mailContent = $strapiCtrl->getTranspoMailContent($lang);
+        $mailData = $mailContent;
+
+        
+        if( $preview ){
+            return $this->response->setBody(
+                    view('transpo/mailing/confirmTranspoPreview', [
+                    'data' => $rsva[0], 
+                    'mailData' => $mailData,
+                    'transpo' => $transpo, 
+                    'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
+                    'lang' => $lang == 'esp'
+                ])
+            );
+        }else{
+            $html = minify_html(
+                view('transpo/mailing/confirmTranspo', [
+                    'data' => $rsva[0], 
+                    'mailData' => $mailData,
+                    'transpo' => $transpo, 
+                    'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
+                    'lang' => $lang == 'esp'
+                ])
+                );
+        }
 
         $zd = new Zendesk();
         $dataTicket = [
@@ -1254,7 +1295,8 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
                         [ "id" => 28837240808724, "value" => isset($rsva[$rsva[0]['tipo'] == "SALIDA" ? 0 : 1]) ? $rsva[$rsva[0]['tipo'] == "SALIDA" ? 0 : 1]['id'] : null]
                     ],
                     "ticket_form_id" => 26597917087124,
-                    "tags" => ['solveticket']
+                    "tags" => ['solveticket','recipient_changed'],
+                    "recipient" => "transfers.".(strtolower($rsva[0]['hotel']) == 'atelier' ? 'atpm' : 'olcp')."@adh.com"
                 ];
 
             }
@@ -1323,6 +1365,40 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
 
     }
 
+    public function exportNextDay(){
+        if( !permiso("exportToQwt") ){
+            return view('error', ["msg" => "No cuentas con permisos para esta función"]);
+        }
+
+        // 123456
+
+        $model = new TransportacionesModel();
+        $data = $model->select('id')->like('status', 'capturad')
+                ->where('date = DATE_ADD(CURDATE(), INTERVAL 1 DAY)', null, false) // Para asegurarse de que 'ticket_qwuantour' sea NULL
+                ->orderBy('folio, tipo, id')->findAll();
+
+        foreach($data as $d){
+            $ids[] = $d['id'];
+        }
+
+        return $this->sendQwtConfirms($ids, true);
+
+
+    }
+    
+    public function exportNextAll(){
+        $model = new TransportacionesModel();
+        $data = $model->select('id')->like('status', 'capturad')
+                ->where('date >= CURDATE()', null, false) // Para asegurarse de que 'ticket_qwuantour' sea NULL
+                ->orderBy('date, folio, tipo, id')->findAll();
+
+        foreach($data as $d){
+            $ids[] = $d['id'];
+        }
+
+        return $this->sendQwtConfirms($ids, true);
+    }
+
     public function exportNewConfirm(){
 
         $ids = $_POST['ids'];
@@ -1340,10 +1416,14 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
 
     }
 
-    public function sendQwtConfirms(){
+    public function sendQwtConfirms( $payload = null, $nextDay = false){
 
-        $ids = $_POST['ids'];
-        $ids = json_decode($ids);
+        if( $payload === null ){
+            $ids = $_POST['ids'];
+            $ids = json_decode($ids);
+        }else{
+            $ids = $payload;
+        }
 
         $model = new TransportacionesModel();
         $data = $model->qwtData($ids);
@@ -1354,14 +1434,14 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
         $uploadToken = $zd->addAttach( $filePath );
 
         $params = [
-            "title" => "Envio de nuevos servicios ATELIER y OLEO",
-            "requesterNew" => [ "name" => "Jose Luis Agosto", "email" => "jagosto@qwantour.com" ],
-            "html_body" => view('Transpo/mailing/exportQwtConfirm', ['transportaciones' => $data, "hotel" => 'atpm', "lang" => true]),
+            "title" => !$nextDay ? "Envio de nuevos servicios ATELIER y OLEO" : "RECAP servicios ATELIER y OLEO " . date("d/m/Y", strtotime("+1 day")),
+            "requesterNew" => [ "name" => "Gerente Operaciones", "email" => "geroperacion@qwantour.com" ],
+            "html_body" => view('Transpo/mailing/exportQwtConfirm', ['transportaciones' => $data, "hotel" => 'atpm', "lang" => true, "recap" => $nextDay]),
             // "html_body" => "Envio de confirmaciones a Qwantour",
             "group" => 26408623595412,
             "status" => "pending",
             "public" => true,
-            "tags" => ['envio_qwt'],
+            "tags" => !$nextDay ? ['envio_qwt'] : ['recap_qwt'],
             'uploads' => [$uploadToken],
             'cc' => [
                     ["user_email" => "operacion@qwantour.com", "user_name" => "Operacion Qwantour"],
@@ -1379,8 +1459,10 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
                 ['ticket_qwantour', $ticketId, true],
             ];
 
-            $mdl = new TransportacionesModel();
-            $mdl->updateByIdSet($ids, $updates);
+            if( !$nextDay) {
+                $mdl = new TransportacionesModel();
+                $mdl->updateByIdSet($ids, $updates);
+            }
 
             gg_response(200, ["Ticket de confirmacion" => $ticketId]);
         }
