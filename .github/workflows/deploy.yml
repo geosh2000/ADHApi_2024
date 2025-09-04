@@ -31,3 +31,4 @@ jobs:
           **/dumps/**
           **/.DS_Store
           **/.env*
+          .git/**
