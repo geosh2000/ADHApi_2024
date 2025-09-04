@@ -13,7 +13,7 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v3
 
-    - name: FTPS Deploy
+    - name: FTPS Deploy root files
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
         server: waws-prod-blu-571.ftp.azurewebsites.windows.net
@@ -22,13 +22,146 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./
-        server-dir: /site/wwwroot/
+        server-dir: /site/wwwroot/testDeploy/
         exclude: |
+          **/.* 
+          **/.*/**
           **/.git*
           **/.github/**
+          **/.DS_Store
+          **/.env*
           **/node_modules/**
           **/tests/**
           **/dumps/**
+          app/**
+          certs/**
+          public/**
+          system/**
+          vendor/**
+          writable/**
+
+    - name: FTPS Deploy app/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./app/
+        server-dir: /site/wwwroot/testDeploy/app/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
           **/.DS_Store
           **/.env*
-          .git/**
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+
+    - name: FTPS Deploy certs/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./certs/
+        server-dir: /site/wwwroot/testDeploy/certs/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+
+    - name: FTPS Deploy public/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./public/
+        server-dir: /site/wwwroot/testDeploy/public/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+
+    - name: FTPS Deploy system/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./system/
+        server-dir: /site/wwwroot/testDeploy/system/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+
+    - name: FTPS Deploy vendor/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./vendor/
+        server-dir: /site/wwwroot/testDeploy/vendor/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+
+    - name: FTPS Deploy writable/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./writable/
+        server-dir: /site/wwwroot/testDeploy/writable/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
