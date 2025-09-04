@@ -22,4 +22,4 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./
-        server-dir: ${{ secrets.FTP_DIR }}
+        server-dir: /site/wwwroot/testApi/
