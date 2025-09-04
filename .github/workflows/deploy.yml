@@ -22,4 +22,12 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./
-        server-dir: /site/wwwroot/testApi/
+        server-dir: /site/wwwroot
+        exclude: |
+          **/.git*
+          **/.github/**
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+          **/.DS_Store
+          **/.env*
