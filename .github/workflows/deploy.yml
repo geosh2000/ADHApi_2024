@@ -16,7 +16,7 @@ jobs:
     - name: FTPS Deploy
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftps
