@@ -259,40 +259,6 @@ jobs:
           **/dumps/**
           Thirdparty/**
 
-    - name: FTPS Deploy app/ (root files only)
-      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
-      with:
-        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps
-        port: 21
-        local-dir: ./app/
-        server-dir: /site/wwwroot/testDeploy/app/
-        exclude: |
-          Config/**
-          Controllers/**
-          Database/**
-          Exceptions/**
-          Filters/**
-          GraphQL/**
-          Helpers/**
-          Language/**
-          Libraries/**
-          Models/**
-          Services/**
-          Thirdparty/**
-          Views/**
-          **/.* 
-          **/.*/**
-          **/.git*
-          **/.github/**
-          **/.DS_Store
-          **/.env*
-          **/node_modules/**
-          **/tests/**
-          **/dumps/**
-          Thirdparty/**
 
     - name: FTPS Deploy certs/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0

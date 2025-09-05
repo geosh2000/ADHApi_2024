@@ -27,3 +27,4 @@
 # composer
 /vendor/
 
+.DS_Store
