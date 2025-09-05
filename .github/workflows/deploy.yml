@@ -39,6 +39,8 @@ jobs:
           system/**
           writable/**
           Thirdparty/**
+          .git/**
+          .github/**
 
 
     - name: FTPS Deploy app/Config/
