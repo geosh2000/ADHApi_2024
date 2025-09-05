@@ -151,7 +151,7 @@ jobs:
           **/dumps/**
           Thirdparty/**
 
-    - name: FTPS Deploy app/Graphql/
+    - name: FTPS Deploy app/GraphQL/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
         server: waws-prod-blu-571.ftp.azurewebsites.windows.net
@@ -159,8 +159,8 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftps
         port: 21
-        local-dir: ./app/Graphql/
-        server-dir: /site/wwwroot/testDeploy/app/Graphql/
+        local-dir: ./app/GraphQL/
+        server-dir: /site/wwwroot/testDeploy/app/GraphQL/
         exclude: |
           **/.* 
           **/.*/**
@@ -321,7 +321,7 @@ jobs:
           Database/**
           Exceptions/**
           Filters/**
-          Graphql/**
+          GraphQL/**
           Helpers/**
           Language/**
           Libraries/**
