@@ -24,11 +24,12 @@ jobs:
         local-dir: ./
         server-dir: /site/wwwroot/testDeploy/
         exclude: |
+          .git/**
+          .github/**
+          .gitignore
+          .DS_Store
           **/.* 
           **/.*/**
-          **/.git*
-          **/.github/**
-          **/.DS_Store
           **/.env*
           **/node_modules/**
           **/tests/**
@@ -39,8 +40,8 @@ jobs:
           system/**
           writable/**
           Thirdparty/**
-          .git/**
-          .github/**
+        include: |
+          *.*    # solo archivos en la raíz
 
 
     - name: FTPS Deploy app/Config/
