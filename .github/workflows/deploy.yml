@@ -13,37 +13,6 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v3
 
-    - name: FTPS Deploy root files
-      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
-      with:
-        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps
-        port: 21
-        local-dir: ./
-        server-dir: /site/wwwroot/testDeploy/
-        exclude: |
-          .git/**
-          .github/**
-          .gitignore
-          .DS_Store
-          **/.* 
-          **/.*/**
-          **/.env*
-          **/node_modules/**
-          **/tests/**
-          **/dumps/**
-          app/**
-          certs/**
-          public/**
-          system/**
-          writable/**
-          Thirdparty/**
-        include: |
-          *.*    # solo archivos en la raíz
-
-
     - name: FTPS Deploy app/Config/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
@@ -220,7 +189,6 @@ jobs:
           **/dumps/**
           Thirdparty/**
 
-    - name: FTPS Deploy app/Libraries/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
         server: waws-prod-blu-571.ftp.azurewebsites.windows.net
