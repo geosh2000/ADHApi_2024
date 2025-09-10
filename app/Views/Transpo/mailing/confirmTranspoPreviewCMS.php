@@ -11,24 +11,28 @@
 
 <?php
     $format = $lang ? 'd M Y' : 'F jS Y';
-    $contact = $mailData['sites'][0]['contact_fields'];
+    $contact = $mailData['mails'][0]['site']['contact_fields'];
     $sources = compact('data', 'mailData', 'transpo','contact');
     $context = ['formatDate' => $lang ? 'd M Y' : 'F jS Y', 'formatTime' => 'h:i A'];
 
-    $strapiVars = strapiVar($mailData['mails'][0]['variables']['variables']['body'], $sources, $context);
-    $contactVars = strapiVar($mailData['mails'][0]['variables']['variables']['footer'], $sources, $context);
+    $strapiVars = strapiVar($mailData['mails'][0]['variables']['body'], $sources, $context);
+    $contactVars = strapiVar($mailData['mails'][0]['variables']['footer'], $sources, $context);
 
     $blocks = $mailData['mails'][0]['body']; // tu arreglo original
 ?>
 
 <?= $this->section('content') ?>
-    <div>
-        <div align="left" style="vertical-align:middle;display:inline-block;padding:20px 20px 0px 58px;">
-            <img data-imagetype="External" src="https://atelier-cc.azurewebsites.net/public/images/shuttle-icon.webp" align="middle" border="0" alt="Confirmada" title="Confirmada" style="display:block;width:49px;text-decoration:none;max-width:49px;border-width:0;border-style:none;"> 
+    <div style="display:flex; align-items:center; padding:20px 58px 0 58px;">
+        <div style="margin-right:20px;">
+            <img data-imagetype="External" 
+                src="https://atelier-cc.azurewebsites.net/public/images/shuttle-icon.webp" 
+                alt="Confirmada" 
+                title="Confirmada" 
+                style="width:49px;max-width:49px;border:0;display:block;">
         </div>
 
         <!-- Saludo y confirmacion -->
-        <div style="vertical-align:top;display:inline-block;margin:0;padding:20px 10px 0 10px;border:0 solid transparent;">   
+        <div style="margin:0;padding:0 10px;border:0 solid transparent;"> 
             <?= printStrapiSection( $blocks, 'header', $strapiVars['header'] )?>    
         </div>
     </div>
@@ -57,24 +61,6 @@
     <!-- Politicas de Cancelacion -->
     <div class="detail-font" style="padding: 25px;">
         <?= printStrapiSection( $blocks, 'cancellation policy', $strapiVars ) ?>
-
-        <?php
-        // Buscar la primera imagen dentro del body
-        $fileUrl = null;
-        foreach ($mailData['mails'][0]['body'] as $block) {
-            if (isset($block['file']['url'])) {
-                $fileUrl = 'https://strapi.grupobd.mx' . $block['file']['url'];
-                break;
-            }
-        }
-
-        if ($fileUrl):
-        ?>
-            <div style="text-align:center; margin-top:20px;">
-                <img src="<?= $fileUrl ?>" alt="<?= $block['file']['alternativeText'] ?? '' ?>" 
-                    style="max-width:100%; height:auto; display:inline-block;">
-            </div>
-        <?php endif; ?>
     </div>
 
 <?= $this->endSection() ?>

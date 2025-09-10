@@ -24,7 +24,7 @@ if (!function_exists('strapiSection')) {
     function strapiSection( $blocks, $name, $strapiVars ){
         // Filtrar headers
         $section = array_filter($blocks, function ($item) use ($name) {
-            return isset($item['name']) && $item['name'] === $name;
+            return isset($item['section']) && $item['section'] === $name;
         });
          // Ordenar por 'sort'
         usort($section, function ($a, $b) {
@@ -33,13 +33,32 @@ if (!function_exists('strapiSection')) {
 
         $output = '';
         foreach ($section as $h) {
-            if (!empty($h['html'])) {
-                $content = $h['html'];
-            } elseif (!empty($h['body'])) {
-                $content = markdown_to_html($h['body']);
-            } else {
-                $content = '';
+            switch($h['type']){
+                case 'html':
+                    $content = $h['html'];
+                    break;
+                case 'markdown':
+                    $content = markdown_to_html($h['body']);
+                    break;
+                case 'text':
+                    $content = nl2br(htmlspecialchars($h['body']));
+                    break;
+                case 'media-image':
+                    $content = '<div style="text-align:center; margin-top:20px;">
+                                    <img src="https://strapi.grupobd.mx'. $h['file']['url'] .'" alt="'.$h['file']['alternativeText'].'" 
+                                        style="max-width:100%; height:auto; display:inline-block;">
+                                </div>';
+                    break;
+                default:
+                    $content = '';
             }
+            // if (!empty($h['html'])) {
+            //     $content = $h['html'];
+            // } elseif (!empty($h['body'])) {
+            //     $content = markdown_to_html($h['body']);
+            // } else {
+            //     $content = '';
+            // }
 
             // asegurar que cada bloque quede separado
             $output .= $content . "\n";

@@ -215,6 +215,28 @@ jobs:
           **/dumps/**
           Thirdparty/**
 
+    - name: FTPS Deploy app/Queries/
+      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      with:
+        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./app/Queries/
+        server-dir: /site/wwwroot/app/Queries/
+        exclude: |
+          **/.* 
+          **/.*/**
+          **/.git*
+          **/.github/**
+          **/.DS_Store
+          **/.env*
+          **/node_modules/**
+          **/tests/**
+          **/dumps/**
+          Thirdparty/**
+
     - name: FTPS Deploy app/Services/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
       with:
