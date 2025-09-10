@@ -24,7 +24,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Config/
-        server-dir: /site/wwwroot/testDeploy/app/Config/
+        server-dir: /site/wwwroot/app/Config/
         exclude: |
           **/.* 
           **/.*/**
@@ -46,7 +46,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Controllers/
-        server-dir: /site/wwwroot/testDeploy/app/Controllers/
+        server-dir: /site/wwwroot/app/Controllers/
         exclude: |
           **/.* 
           **/.*/**
@@ -68,7 +68,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Database/
-        server-dir: /site/wwwroot/testDeploy/app/Database/
+        server-dir: /site/wwwroot/app/Database/
         exclude: |
           **/.* 
           **/.*/**
@@ -90,7 +90,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Exceptions/
-        server-dir: /site/wwwroot/testDeploy/app/Exceptions/
+        server-dir: /site/wwwroot/app/Exceptions/
         exclude: |
           **/.* 
           **/.*/**
@@ -112,7 +112,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Filters/
-        server-dir: /site/wwwroot/testDeploy/app/Filters/
+        server-dir: /site/wwwroot/app/Filters/
         exclude: |
           **/.* 
           **/.*/**
@@ -134,7 +134,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/GraphQL/
-        server-dir: /site/wwwroot/testDeploy/app/GraphQL/
+        server-dir: /site/wwwroot/app/GraphQL/
         exclude: |
           **/.* 
           **/.*/**
@@ -156,7 +156,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Helpers/
-        server-dir: /site/wwwroot/testDeploy/app/Helpers/
+        server-dir: /site/wwwroot/app/Helpers/
         exclude: |
           **/.* 
           **/.*/**
@@ -178,7 +178,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Language/
-        server-dir: /site/wwwroot/testDeploy/app/Language/
+        server-dir: /site/wwwroot/app/Language/
         exclude: |
           **/.* 
           **/.*/**
@@ -202,7 +202,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Models/
-        server-dir: /site/wwwroot/testDeploy/app/Models/
+        server-dir: /site/wwwroot/app/Models/
         exclude: |
           **/.* 
           **/.*/**
@@ -224,7 +224,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Services/
-        server-dir: /site/wwwroot/testDeploy/app/Services/
+        server-dir: /site/wwwroot/app/Services/
         exclude: |
           **/.* 
           **/.*/**
@@ -246,7 +246,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./app/Views/
-        server-dir: /site/wwwroot/testDeploy/app/Views/
+        server-dir: /site/wwwroot/app/Views/
         exclude: |
           **/.* 
           **/.*/**
@@ -269,7 +269,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./certs/
-        server-dir: /site/wwwroot/testDeploy/certs/
+        server-dir: /site/wwwroot/certs/
         exclude: |
           **/.* 
           **/.*/**
@@ -291,7 +291,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./public/
-        server-dir: /site/wwwroot/testDeploy/public/
+        server-dir: /site/wwwroot/public/
         exclude: |
           **/.* 
           **/.*/**
@@ -304,27 +304,27 @@ jobs:
           **/dumps/**
           Thirdparty/**
 
-    - name: FTPS Deploy system/
-      uses: SamKirkland/FTP-Deploy-Action@v4.0.0
-      with:
-        server: waws-prod-blu-571.ftp.azurewebsites.windows.net
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps
-        port: 21
-        local-dir: ./system/
-        server-dir: /site/wwwroot/testDeploy/system/
-        exclude: |
-          **/.* 
-          **/.*/**
-          **/.git*
-          **/.github/**
-          **/.DS_Store
-          **/.env*
-          **/node_modules/**
-          **/tests/**
-          **/dumps/**
-          Thirdparty/**
+    # - name: FTPS Deploy system/
+    #   uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+    #   with:
+    #     server: waws-prod-blu-571.ftp.azurewebsites.windows.net
+    #     username: ${{ secrets.FTP_USERNAME }}
+    #     password: ${{ secrets.FTP_PASSWORD }}
+    #     protocol: ftps
+    #     port: 21
+    #     local-dir: ./system/
+    #     server-dir: /site/wwwroot/system/
+    #     exclude: |
+    #       **/.* 
+    #       **/.*/**
+    #       **/.git*
+    #       **/.github/**
+    #       **/.DS_Store
+    #       **/.env*
+    #       **/node_modules/**
+    #       **/tests/**
+    #       **/dumps/**
+    #       Thirdparty/**
 
     - name: FTPS Deploy writable/
       uses: SamKirkland/FTP-Deploy-Action@v4.0.0
@@ -335,7 +335,7 @@ jobs:
         protocol: ftps
         port: 21
         local-dir: ./writable/
-        server-dir: /site/wwwroot/testDeploy/writable/
+        server-dir: /site/wwwroot/writable/
         exclude: |
           **/.* 
           **/.*/**
