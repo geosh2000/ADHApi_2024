@@ -1205,16 +1205,16 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
             $id2 = 0;
         }
 
-        $strapiCtrl = new \App\Controllers\Cms\StrapiController();
-        $mailContent = $strapiCtrl->getTranspoMailContent($lang);
-        $mailData = $mailContent;
+        // $strapiCtrl = new \App\Controllers\Cms\StrapiController();
+        // $mailContent = $strapiCtrl->getTranspoMailContent($lang);
+        // $mailData = $mailContent;
 
         
         if( $preview ){
             return $this->response->setBody(
                     view('transpo/mailing/confirmTranspoPreview', [
                     'data' => $rsva[0], 
-                    'mailData' => $mailData,
+                    // 'mailData' => $mailData,
                     'transpo' => $transpo, 
                     'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
                     'lang' => $lang == 'esp'
@@ -1222,9 +1222,9 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
             );
         }else{
             $html = minify_html(
-                view('transpo/mailing/confirmTranspo', [
+                view('transpo/mailing/confirmTranspo_Deprecated', [
                     'data' => $rsva[0], 
-                    'mailData' => $mailData,
+                    // 'mailData' => $mailData,
                     'transpo' => $transpo, 
                     'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
                     'lang' => $lang == 'esp'
@@ -1361,7 +1361,6 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
                 ->orderBy('folio, tipo, id')->findAll();
 
         return view('Transpo/exportQwt', ['transportaciones' => $data]);
-
 
     }
 
