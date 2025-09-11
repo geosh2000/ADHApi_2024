@@ -7,6 +7,7 @@
 
 <?= $this->section('imgHeader') ?>
     <img data-imagetype="External" src="https://glassboardengine.azurewebsites.net/assets/img/<?php echo $hotel == 'atpm' ? 'logo' : 'logoOleo' ; ?>.png" border="0" alt="Texto alternativo" title="Texto alternativo" style="display:block;width:105px;text-decoration:none;max-width:105px;border-width:0;border-style:none;"> 
+    <span style="display:block;height:10px; color: white"><?= $draft ? "Borrador" : "Publicado" ?></span>
 <?= $this->endSection() ?>
 
 <?php

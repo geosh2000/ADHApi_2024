@@ -38,7 +38,13 @@ if (!function_exists('strapiSection')) {
                     $content = $h['html'];
                     break;
                 case 'markdown':
-                    $content = markdown_to_html($h['body']);
+                    $html = markdown_to_html($h['body']);
+                    if (!empty($h['wrapper'])) {
+                        // Reemplaza el marcador por el HTML generado
+                        $content = str_replace('{{richText}}', $html, $h['wrapper']);
+                    } else {
+                        $content = $html;
+                    }
                     break;
                 case 'text':
                     $content = nl2br(htmlspecialchars($h['body']));

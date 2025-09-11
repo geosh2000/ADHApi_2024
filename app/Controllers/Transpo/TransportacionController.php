@@ -1134,11 +1134,16 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
 
         $model = new TransportacionesModel();
 
+        // set draft to false
+        $draft = false;
+
         if( $preview ){
             
             $id1 = $this->request->getGet('id1');
             $id2 = $this->request->getGet('id2');
             $lang = $this->request->getGet('lang');
+            // draft llega como get en "draft = true"
+            $draft = $this->request->getGet('draft') == 'true';
         }else{
             if( !isset($_POST['id1']) || !isset($_POST['id2']) ){
                 $getIds = $model->getRoundIds(!isset($_POST['id1']) ? $_POST['id2'] : $_POST['id1']);
@@ -1206,7 +1211,7 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
         }
 
         $strapiCtrl = new \App\Controllers\Cms\StrapiController();
-        $mailContent = $strapiCtrl->getTranspoMailContent($lang);
+        $mailContent = $strapiCtrl->getTranspoMailContent($lang, $draft);
         $mailData = $mailContent;
 
         
@@ -1217,7 +1222,8 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
                     'mailData' => $mailData,
                     'transpo' => $transpo, 
                     'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
-                    'lang' => $lang == 'esp'
+                    'lang' => $lang == 'esp',
+                    'draft' => $draft
                 ])
             );
         }else{

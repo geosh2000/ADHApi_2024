@@ -7,8 +7,8 @@ class TranspoMailQuery
     public static function confirmation()
     {
         return <<<'GRAPHQL'
-        query Mails($filters: MailFiltersInput) {
-            mails(filters: $filters) {
+        query Mails($filters: MailFiltersInput, $status: PublicationStatus) {
+            mails(filters: $filters, status: $status) {
                 slug
                 name
                 subject
@@ -26,6 +26,7 @@ class TranspoMailQuery
                         body
                         class
                         css
+                        wrapper
                         type
                     }
                     ... on ComponentSharedButtons {

@@ -16,7 +16,7 @@ class StrapiController extends BaseController
         $this->strapi = new StrapiService();
     }
 
-    public function getTranspoMailContent($lang)
+    public function getTranspoMailContent($lang, $draft = false)
     {
         $lan = $lang == 'eng' ? 'en' : 'es';
 
@@ -31,7 +31,8 @@ class StrapiController extends BaseController
                 "locale" => [
                     "eq" => $lan
                 ]
-            ]
+            ],
+            "status" => $draft ? "DRAFT" : "PUBLISHED"
         ];
 
         $query = TranspoMailQuery::confirmation();
