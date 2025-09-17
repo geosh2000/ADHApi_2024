@@ -95,33 +95,30 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const modalEl = document.getElementById('exportModal');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl); // una sola instancia
+        const modal = $('#exportModal'); // jQuery modal en Bootstrap 4
+        const bodyEl = document.getElementById('exportModalBody');
+        const btn = document.getElementById('exportNextDayBtn');
 
-    const bodyEl = document.getElementById('exportModalBody');
-    const btn = document.getElementById('exportNextDayBtn');
+        btn.addEventListener('click', function () {
+            bodyEl.textContent = 'Procesando...';
+            modal.modal('show');
 
-    btn.addEventListener('click', function () {
-        bodyEl.textContent = 'Procesando...';
-        modal.show();
-
-        fetch('<?= base_url('transpo/exportNextDay') ?>', { method: 'GET' })
-        .then(r => r.json())
-        .then(data => {
-            // Si tu endpoint regresa { "ticket": 1234 }
-            bodyEl.textContent = data.ticket !== undefined
-            ? `ticket: ${data.ticket}`
-            : JSON.stringify(data, null, 2); // bonito si cambia el shape
-        })
-        .catch(err => {
-            bodyEl.textContent = 'Error: ' + err;
+            fetch('<?= base_url('transpo/exportNextDay') ?>', { method: 'GET' })
+            .then(r => r.json())
+            .then(data => {
+                bodyEl.textContent = data.ticket !== undefined
+                    ? `ticket: ${data.ticket}`
+                    : JSON.stringify(data, null, 2);
+            })
+            .catch(err => {
+                bodyEl.textContent = 'Error: ' + err;
+            });
         });
-    });
 
-    // Fallback: si por cualquier cosa los data-attrs no funcionan, forzamos hide
-    document.querySelectorAll('#exportModal [data-bs-dismiss="modal"]').forEach(el => {
-        el.addEventListener('click', () => modal.hide());
-    });
+        // Opcional: fallback para botones con data-dismiss
+        $('#exportModal [data-bs-dismiss="modal"]').on('click', function () {
+            modal.modal('hide');
+        });
     });
 </script>
 
