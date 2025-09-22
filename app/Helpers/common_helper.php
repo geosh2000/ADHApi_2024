@@ -116,7 +116,7 @@
     }
 
     function permiso( $p ){
-        return true;
+        // return true;
         $session = session();
         $perm = $session->get('permissions');
 

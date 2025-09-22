@@ -105,6 +105,12 @@ $routes->group('transpoTest', function($routes){
 });
 
 
+$routes->group('admin', ['filter' => 'authFilter'], function($routes){
+    $routes->get('/', 'Admin\AdminController::index');
+    $routes->get('codes', 'Admin\AdminController::codes');
+    $routes->post('code_modify', 'Admin\AdminController::code_modify');
+});
+
 $routes->group('transpo', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'Transpo\TransportacionController::index');
     $routes->get('create', 'Transpo\TransportacionController::create');

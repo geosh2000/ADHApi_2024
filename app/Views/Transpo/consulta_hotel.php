@@ -239,7 +239,6 @@
             const today = new Date().toISOString().slice(0, 10);
 
             services.forEach(item => {
-                console.log(item);
                 if (!item.tipo || !item.date) return;
                 if (item.date !== today) return;
 
