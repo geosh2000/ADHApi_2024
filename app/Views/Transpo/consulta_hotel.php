@@ -223,7 +223,6 @@
             </section>
         </div>
     </main>
-    <pre><?= var_dump($resultados) ?></pre>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
