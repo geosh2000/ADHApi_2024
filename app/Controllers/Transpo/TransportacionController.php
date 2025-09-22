@@ -1474,6 +1474,52 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
 
     }
 
+    public function consultaHotel()
+    {
+        $model = new TransportacionesModel();
+
+        // Capturar el valor ingresado (folio o nombre)
+        $search = $this->request->getGet('q');
+
+        $resultados = [];
+        if ($search) {
+            // Buscar por folio o por nombre de cliente
+            $resultados = $model->like('folio', $search)
+                ->orLike('guest', $search)
+                ->orderBy('date', 'ASC')
+                ->findAll();
+        }
+
+        $data = [
+            'title' => 'Consulta de Transportación',
+            'search' => $search,
+            'resultados' => $resultados
+        ];
+
+        return view('transpo/consulta_hotel', $data);
+    }
+
+    public function today()
+    {
+        $today = date('Y-m-d');
+        $model = new TransportacionesModel();
+
+        // Traer servicios de hoy
+        $servicios = $model->where('date', $today)->like('hotel', 'atelier')->like('status', 'capturad')->findAll();
+
+        // Consolidar todos los servicios del día (sin agrupar por folio)
+        $response = [];
+        foreach ($servicios as $s) {
+            $response[] = [
+                'folio' => $s['folio'],
+                'guest' => $s['guest'],
+                'tipo'  => $s['tipo'],
+                'date'  => $s['date']
+            ];
+        }
+        return $this->response->setJSON($response);
+    }
+
 
 
 }

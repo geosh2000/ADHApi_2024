@@ -81,6 +81,8 @@ $routes->group('public', function($routes){
     $routes->get('transfer-reg', 'Transpo\TransportacionController::showForm');
     $routes->get('transfer-reg/(:num)', 'Transpo\TransportacionController::showForm/$1');
     $routes->get('invalid_form', 'Transpo\TransportacionController::invalid');
+    $routes->get('consulta_transpo', 'Transpo\TransportacionController::consultaHotel');
+    $routes->get('consulta_transpo/today', 'Transpo\TransportacionController::today');
 });
 
 $routes->group('cc', function($routes){
