@@ -181,6 +181,7 @@
 
         // Search filtering logic
         const searchInput = document.getElementById('searchInput');
+
         searchInput.addEventListener('input', () => {
             const filter = searchInput.value.toLowerCase();
 
@@ -229,12 +230,28 @@
             });
         });
 
+        // Restore filter from localStorage if exists
+        const savedFilter = localStorage.getItem('codesFilter');
+        if (savedFilter !== null) {
+            searchInput.value = savedFilter;
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            localStorage.removeItem('codesFilter');
+        }
+
         // Clear search input and trigger input event
         const clearBtn = document.getElementById('clearSearch');
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
             searchInput.dispatchEvent(new Event('input'));
             searchInput.focus();
+        });
+
+        // Save filter value to localStorage before submitting any form
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', () => {
+                localStorage.setItem('codesFilter', searchInput.value);
+            });
         });
     });
 </script>
