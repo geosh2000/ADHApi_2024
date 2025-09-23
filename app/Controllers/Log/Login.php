@@ -34,13 +34,14 @@ class Login extends BaseController
                 $sessionData = [
                     'id' => $user['id'],
                     'username' => $user['username'],
+                    'shortname' => $user['nombre_corto'],
                     'logged_in' => TRUE,
                     'permissions' => $encodedData
                 ];
                 $session->set($sessionData);
 
                 // Redirigir a la URL de origen o a '/adh'
-                $redirect_url = $session->get('redirect_url') ?? '/transpo';
+                $redirect_url = $session->get('redirect_url') ?? '/app';
                 $session->remove('redirect_url');
                 return redirect()->to($redirect_url);
             } else {

@@ -105,6 +105,10 @@ $routes->group('transpoTest', function($routes){
 });
 
 
+$routes->group('app', ['filter' => 'authFilter'], function($routes){
+    $routes->get('/', 'App\AppController::index');
+});
+
 $routes->group('admin', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'Admin\AdminController::index');
     $routes->get('codes', 'Admin\AdminController::codes');
