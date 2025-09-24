@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Rsv\Quote::framedQuote');
+$routes->get('/', 'App\AppController::index', ['filter' => 'authFilter']);
 $routes->get('test', 'TestController::index');
 $routes->get('logout', 'Registro::logout');
 

@@ -224,6 +224,11 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a href="<?= site_url('cc/cotizador') ?>" class="nav-link <?= $currentPath === 'cc/cotizador' ? 'active' : '' ?>" tabindex="0">
+                    <i class="fa-solid fa-calculator"></i><span>Cotizador</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0">
                     <i class="fa-solid fa-cog"></i><span>Configuración</span>
                 </a>
