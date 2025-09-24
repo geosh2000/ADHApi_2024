@@ -54,4 +54,10 @@ class UserModel extends Model
 
     }
 
+    public function horarios($userId)
+    {
+        $horarioModel = new HorarioAgenteModel();
+        return $horarioModel->getHorariosByUser($userId);
+    }
+
 }

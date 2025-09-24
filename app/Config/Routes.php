@@ -113,6 +113,15 @@ $routes->group('admin', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'Admin\AdminController::index');
     $routes->get('codes', 'Admin\AdminController::codes');
     $routes->post('code_modify', 'Admin\AdminController::code_modify');
+
+    // Horarios Admin
+    $routes->get('horarios', 'Admin\HorarioController::index');
+    $routes->get('horarios/create', 'Admin\HorarioController::form');
+    $routes->get('horarios/edit/(:num)', 'Admin\HorarioController::form/$1');
+    $routes->post('horarios/save', 'Admin\HorarioController::save');
+
+    // Listar los horarios del usuario en la vista de home
+    $routes->get('home/schedules', 'Admin\HorarioController::homeSchedules');
 });
 
 $routes->group('transpo', ['filter' => 'authFilter'], function($routes){

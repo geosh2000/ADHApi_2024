@@ -88,13 +88,24 @@
         }
         .dropdown-menu {
             min-width: 8rem;
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 0.5rem 0;
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
         }
         .dropdown-menu a {
             color: #212529;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 1.5rem;
+            transition: background-color 0.2s ease;
         }
-        .dropdown-menu a:hover {
-            background-color: #f8f9fa;
+        .dropdown-menu a:hover, .dropdown-menu a:focus {
+            background-color: #e2e6ea;
             color: #212529;
+            text-decoration: none;
         }
         .nav-link.active {
             color: #fff !important;
@@ -116,14 +127,45 @@
         a.nav-link[data-bs-toggle="collapse"][aria-expanded="true"] i.fa-chevron-down {
             transform: rotate(180deg);
         }
+
+        /* Mobile sidebar styles */
+        @media (max-width: 767.98px) {
+            #sidebar {
+                top: 56px;
+                left: -200px;
+                width: 200px;
+                height: calc(100vh - 56px);
+                transition: left 0.3s ease;
+                overflow-y: auto;
+            }
+            #sidebar.show {
+                left: 0;
+            }
+            #sidebar.show span {
+                opacity: 1 !important;
+            }
+            #sidebar:hover {
+                width: 200px;
+            }
+            main {
+                margin-left: 0;
+                transition: margin-left 0.3s ease;
+            }
+            #sidebar.show + main {
+                margin-left: 200px;
+            }
+        }
     </style>
     <?= $this->renderSection('styles') ?>
 </head>
 <body>
     <?php $currentPath = current_url(true)->getPath(); ?>
     <nav class="navbar navbar-expand navbar-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><?= $this->renderSection('title') ?></a>
+        <div class="container-fluid d-flex align-items-center">
+            <button class="btn btn-dark d-md-none me-2" id="sidebarToggle" type="button" aria-label="Toggle sidebar">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand mb-0" href="#"><?= $this->renderSection('title') ?></a>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,7 +173,7 @@
                         <i class="fa-solid fa-user"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="<?= site_url('login/out') ?>">Cerrar sesión</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('login/out') ?>"><i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión</a></li>
                     </ul>
                 </li>
             </ul>
@@ -186,17 +228,26 @@
                     <i class="fa-solid fa-cog"></i><span>Configuración</span>
                 </a>
             </li>
+            <?php
+                // Determinar si el submenú de Admin debe estar expandido y/o activo
+                $isAdminActive = in_array($currentPath, ['admin/codes', 'admin/horarios']);
+            ?>
             <li class="nav-item">
-                <a href="#adminSubmenu" class="nav-link d-flex align-items-center" tabindex="0" data-bs-toggle="collapse" aria-controls="adminSubmenu" aria-expanded="false">
+                <a href="#adminSubmenu" class="nav-link d-flex align-items-center <?= $isAdminActive ? 'active' : '' ?>" tabindex="0" data-bs-toggle="collapse" aria-controls="adminSubmenu" aria-expanded="<?= $isAdminActive ? 'true' : 'false' ?>">
                     <i class="fa-solid fa-tools"></i>
                     <span>Admin</span>
                     <i class="fa-solid fa-chevron-down ms-auto"></i>
                 </a>
-                <div class="collapse ms-3" id="adminSubmenu">
+                <div class="collapse ms-3<?= $isAdminActive ? ' show' : '' ?>" id="adminSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a href="<?= site_url('admin/codes') ?>" class="nav-link <?= $currentPath === 'admin/codes' ? 'active' : '' ?>" tabindex="0">
                                 <i class="fa-solid fa-ticket-alt"></i><span>Codes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= site_url('admin/horarios') ?>" class="nav-link <?= $currentPath === 'admin/horarios' ? 'active' : '' ?>" tabindex="0">
+                                <i class="fa-solid fa-clock"></i><span>Horarios</span>
                             </a>
                         </li>
                     </ul>
@@ -210,6 +261,33 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar if clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = sidebarToggle.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Optional: Close sidebar on window resize if desktop
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>
