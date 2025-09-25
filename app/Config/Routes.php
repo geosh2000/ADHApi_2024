@@ -107,6 +107,7 @@ $routes->group('transpoTest', function($routes){
 
 $routes->group('app', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'App\AppController::index');
+    $routes->get('change-password', 'Log\Login::showChangePassword');
 });
 
 $routes->group('admin', ['filter' => 'authFilter'], function($routes){
@@ -298,6 +299,7 @@ $routes->group('login', function($routes){
     $routes->get('out', 'Log\Login::logout', ['as' => 'login.logout']);
     $routes->get('show', 'Log\Login::show', ['as' => 'login.show']);
     $routes->get('perm', 'Log\Login::showSessionData');
+    $routes->post('changePassword', 'Log\Login::changePassword');
 });
 
 // Rutas Mailing

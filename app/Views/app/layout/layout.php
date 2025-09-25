@@ -173,6 +173,7 @@
                         <i class="fa-solid fa-user"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="<?= site_url('app/change-password') ?>"><i class="fa-solid fa-key"></i> Cambiar contraseña</a></li>
                         <li><a class="dropdown-item" href="<?= site_url('login/out') ?>"><i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión</a></li>
                     </ul>
                 </li>

@@ -60,4 +60,25 @@ class UserModel extends Model
         return $horarioModel->getHorariosByUser($userId);
     }
 
+    public function changePassword($userId, $newPassword)
+    {
+        // Encriptar la contraseña antes de guardarla
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        return $this->update($userId, [
+            'password' => $hashedPassword
+        ]);
+    }
+
+    public function verifyPassword($userId, $currentPassword)
+    {
+        $user = $this->find($userId);
+
+        if (!$user) {
+            return false; // Usuario no encontrado
+        }
+
+        return password_verify($currentPassword, $user['password']);
+    }
+
 }

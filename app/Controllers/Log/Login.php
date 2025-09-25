@@ -97,5 +97,47 @@ class Login extends BaseController
     public function passHash(){
         echo password_hash("Atelier2024", PASSWORD_DEFAULT);
     }
-}
 
+    public function changePassword()
+    {
+        $session = session();
+        $userId = $session->get('id');
+
+        $currentPassword = $this->request->getPost('current_password');
+        $newPassword = $this->request->getPost('new_password');
+        $confirmPassword = $this->request->getPost('confirm_password');
+
+        // Validar confirmación
+        if ($newPassword !== $confirmPassword) {
+            $session->setFlashdata('msg', 'Las contraseñas nuevas no coinciden.');
+            return redirect()->back();
+        }
+
+        // Validar seguridad de la contraseña
+        $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-])[A-Za-z0-9!@#$%^&*()_+=-]{8,}$/';
+        if (!preg_match($pattern, $newPassword)) {
+            $session->setFlashdata('msg', 'La nueva contraseña no cumple con los requisitos de seguridad.');
+            return redirect()->back();
+        }
+
+        $userModel = new UserModel();
+
+        if (!$userModel->verifyPassword($userId, $currentPassword)) {
+            $session->setFlashdata('msg', 'La contraseña actual no es correcta.');
+            return redirect()->back();
+        }
+
+        if ($userModel->changePassword($userId, $newPassword)) {
+            $session->setFlashdata('msg', 'Contraseña cambiada correctamente.');
+        } else {
+            $session->setFlashdata('msg', 'Error al cambiar la contraseña.');
+        }
+
+        return redirect()->back();
+    }
+
+    public function showChangePassword()
+    {
+        return view('auth/change_password');
+    }
+}

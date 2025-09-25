@@ -43,6 +43,22 @@
         padding: 0.2rem 0.5rem;
         border-radius: 0.25rem;
         user-select: text;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .copy-indicator {
+        position: absolute;
+        top: -1.5rem;
+        right: 0;
+        font-size: 0.8rem;
+        color: #fff;
+        background-color: #28a745;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        padding: 0 0.25rem;
+        border-radius: 0.25rem;
     }
 
     .btn-edit {
@@ -61,7 +77,7 @@
 
 <?php $this->section('content') ?>
 <div class="container">
-    <?php if (permiso("discountCodeEdit")): ?>
+    <?php if (permiso("viewCodes")): ?>
         <?php if (session()->getFlashdata('message')): ?>
             <?php $type = session()->getFlashdata('message_type'); ?>
             <div class="alert alert-<?= ($type === 'success') ? 'success' : (($type === 'error') ? 'danger' : 'info') ?> alert-dismissible fade show" role="alert">
@@ -117,10 +133,12 @@
                                             <form action="<?= site_url('admin/code_modify') ?>" method="post" class="mt-auto" id="form-<?= esc($code['id']) ?>">
                                                 <div class="mb-3">
                                                     <label for="code-<?= esc($code['id']) ?>" class="form-label"><i class="fas fa-barcode me-2"></i>Código</label>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <span class="code-text" id="code-text-<?= esc($code['id']) ?>"><?= esc($code['code']) ?></span>
+                                                    <div class="d-flex align-items-center gap-2 position-relative">
+                                                        <span class="code-text" id="code-text-<?= esc($code['id']) ?>"><?= esc($code['code']) ?><span class="copy-indicator" id="copy-indicator-<?= esc($code['id']) ?>">¡Copiado!</span></span>
                                                         <input type="text" class="form-control d-none" id="code-<?= esc($code['id']) ?>" name="code" value="<?= esc($code['code']) ?>" required>
-                                                        <button type="button" class="btn-edit" aria-label="Editar código" title="Editar código" onclick="toggleEdit(<?= esc($code['id']) ?>)"><i class="fas fa-pen" id="icon-<?= esc($code['id']) ?>"></i></button>
+                                                        <?php if(permiso('discountCodeEdit')): ?>
+                                                            <button type="button" class="btn-edit" aria-label="Editar código" title="Editar código" onclick="toggleEdit(<?= esc($code['id']) ?>)"><i class="fas fa-pen" id="icon-<?= esc($code['id']) ?>"></i></button>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                                 <input type="hidden" name="id" value="<?= esc($code['id']) ?>">
@@ -253,6 +271,27 @@
             forms.forEach(form => {
                 form.addEventListener('submit', () => {
                     localStorage.setItem('codesFilter', searchInput.value);
+                });
+            });
+
+            // Copy to clipboard functionality
+            const codeTexts = document.querySelectorAll('.code-text');
+            codeTexts.forEach(codeText => {
+                codeText.addEventListener('click', () => {
+                    const text = codeText.textContent.replace('¡Copiado!', '').trim();
+                    navigator.clipboard.writeText(text).then(() => {
+                        const indicator = codeText.querySelector('.copy-indicator');
+                        if (indicator) {
+                            indicator.style.opacity = '1';
+                            codeText.style.outline = '2px solid #28a745';
+                            setTimeout(() => {
+                                indicator.style.opacity = '0';
+                                codeText.style.outline = '';
+                            }, 1500);
+                        }
+                    }).catch(err => {
+                        console.error('Error copying text: ', err);
+                    });
                 });
             });
         });
