@@ -91,6 +91,8 @@ $routes->group('cc', ['filter' => 'authFilter'], function($routes){
     $routes->get('test', 'Rsv\Quote::test');
 });
 
+$routes->get('cotizador', 'Rsv\Quote::framedQuote/zd');
+
 $routes->group('mailing', function($routes){
     $routes->get('requestTemplate/(:num)', 'Transpo\TransportacionController::mailRequest/$1');
 });

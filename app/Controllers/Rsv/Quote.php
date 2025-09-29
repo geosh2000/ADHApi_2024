@@ -63,7 +63,7 @@ class Quote extends BaseController
         gg_response(200, ['error' => false, 'msg' => 'Cotización Obtenida', 'data' => $precios]);
     }
 
-    public function framedQuote(){
+    public function framedQuote( $frame = 'app' ){
         // Obtener la instancia de la base de datos
         $db = \Config\Database::connect('production');
 
@@ -85,7 +85,7 @@ class Quote extends BaseController
             }
         }
 
-        return view('Quote/cotizador', ['codes' => $codes]);
+        return view($frame == 'zd' ? 'Quote/zendesk' : 'Quote/cotizador', ['codes' => $codes]);
 
     }
 }
