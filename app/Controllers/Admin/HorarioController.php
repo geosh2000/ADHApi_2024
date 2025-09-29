@@ -27,7 +27,7 @@ class HorarioController extends BaseController
             // Por defecto, lunes a viernes de la semana actual
             $monday = new \DateTime('monday this week');
             $fecha_inicio = $monday->format('Y-m-d');
-            $friday = (clone $monday)->modify('+4 days');
+            $friday = (clone $monday)->modify('+6 days');
             $fecha_fin = $friday->format('Y-m-d');
         }
 

@@ -85,7 +85,7 @@ class Quote extends BaseController
             }
         }
 
-        return view('Quote/index', ['codes' => $codes]);
+        return view('Quote/cotizador', ['codes' => $codes]);
 
     }
 }

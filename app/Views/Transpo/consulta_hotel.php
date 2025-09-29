@@ -158,7 +158,7 @@
                                             </div>
                                             <?php if ($data['entrada'] || $data['salida']): ?>
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                    <?php if ($data['entrada'] && !empty($data['entrada']['date'])): ?>
+                                                    <?php if ($data['entrada'] && !empty($data['entrada']['time'])): ?>
                                                         <div class="bg-white/80 rounded-lg p-4 mb-4 md:mb-0">
                                                             <h3 class="font-semibold text-lg mb-2">Entrada</h3>
                                                             <ul class="divide-y divide-gray-300 text-gray-700 text-sm sm:text-base">
@@ -185,7 +185,7 @@
                                                             <p>Servicio NO solicitado</p>
                                                         </div>
                                                     <?php endif; ?>
-                                                    <?php if ($data['salida'] && !empty($data['salida']['date'])): ?>
+                                                    <?php if ($data['salida'] && !empty($data['salida']['time'])): ?>
                                                         <div class="bg-white/80 rounded-lg p-4">
                                                             <h3 class="font-semibold text-lg mb-2">Salida</h3>
                                                             <ul class="divide-y divide-gray-300 text-gray-700 text-sm sm:text-base">

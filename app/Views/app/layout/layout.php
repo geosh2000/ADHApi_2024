@@ -15,7 +15,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $this->renderSection('pageTitle') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <style>
         body {
             background-color: #f8f9fa;
@@ -184,12 +186,12 @@
     <nav id="sidebar" aria-label="Sidebar navigation">
         <ul class="nav flex-column pt-3">
             <li class="nav-item">
-                <a href="<?= site_url('app') ?>" class="nav-link <?= $currentPath === 'app' ? 'active' : '' ?>" tabindex="0">
+                <a href="<?= site_url('app') ?>" class="nav-link <?= $currentPath === 'app' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-house"></i><span>Inicio</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= site_url('cio/dashboard') ?>" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0">
+                <a href="<?= site_url('cio/dashboard') ?>" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-chart-line"></i><span>Estadísticas</span>
                 </a>
             </li>
@@ -204,7 +206,8 @@
                    tabindex="0"
                    data-bs-toggle="collapse"
                    aria-controls="transpoSubmenu"
-                   aria-expanded="<?= $isTranspoActive ? 'true' : 'false' ?>">
+                   aria-expanded="<?= $isTranspoActive ? 'true' : 'false' ?>"
+                   onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-shuttle-space"></i>
                     <span>Transpo</span>
                     <i class="fa-solid fa-chevron-down ms-auto"></i>
@@ -212,12 +215,12 @@
                 <div class="collapse ms-3<?= $isTranspoActive ? ' show' : '' ?>" id="transpoSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="<?= site_url('transpo') ?>" class="nav-link <?= $currentPath === 'transpo' ? 'active' : '' ?>" tabindex="0">
+                            <a href="<?= site_url('transpo') ?>" class="nav-link <?= $currentPath === 'transpo' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-bus"></i><span>GG Transpo</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= site_url('public/consulta_transpo') ?>" class="nav-link <?= $currentPath === 'public/consulta_transpo' ? 'active' : '' ?>" tabindex="0">
+                            <a href="<?= site_url('public/consulta_transpo') ?>" class="nav-link <?= $currentPath === 'public/consulta_transpo' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-magnifying-glass"></i><span>Consulta</span>
                             </a>
                         </li>
@@ -225,12 +228,12 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="<?= site_url('cc/cotizador') ?>" class="nav-link <?= $currentPath === 'cc/cotizador' ? 'active' : '' ?>" tabindex="0">
+                <a href="<?= site_url('cc/cotizador') ?>" class="nav-link <?= $currentPath === 'cc/cotizador' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-calculator"></i><span>Cotizador</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0">
+                <a href="#" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-cog"></i><span>Configuración</span>
                 </a>
             </li>
@@ -239,7 +242,7 @@
                 $isAdminActive = in_array($currentPath, ['admin/codes', 'admin/horarios']);
             ?>
             <li class="nav-item">
-                <a href="#adminSubmenu" class="nav-link d-flex align-items-center <?= $isAdminActive ? 'active' : '' ?>" tabindex="0" data-bs-toggle="collapse" aria-controls="adminSubmenu" aria-expanded="<?= $isAdminActive ? 'true' : 'false' ?>">
+                <a href="#adminSubmenu" class="nav-link d-flex align-items-center <?= $isAdminActive ? 'active' : '' ?>" tabindex="0" data-bs-toggle="collapse" aria-controls="adminSubmenu" aria-expanded="<?= $isAdminActive ? 'true' : 'false' ?>" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-tools"></i>
                     <span>Admin</span>
                     <i class="fa-solid fa-chevron-down ms-auto"></i>
@@ -247,12 +250,12 @@
                 <div class="collapse ms-3<?= $isAdminActive ? ' show' : '' ?>" id="adminSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="<?= site_url('admin/codes') ?>" class="nav-link <?= $currentPath === 'admin/codes' ? 'active' : '' ?>" tabindex="0">
+                            <a href="<?= site_url('admin/codes') ?>" class="nav-link <?= $currentPath === 'admin/codes' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-ticket-alt"></i><span>Codes</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= site_url('admin/horarios') ?>" class="nav-link <?= $currentPath === 'admin/horarios' ? 'active' : '' ?>" tabindex="0">
+                            <a href="<?= site_url('admin/horarios') ?>" class="nav-link <?= $currentPath === 'admin/horarios' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-clock"></i><span>Horarios</span>
                             </a>
                         </li>
@@ -266,6 +269,9 @@
         <?= $this->renderSection('content') ?>
     </main>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
