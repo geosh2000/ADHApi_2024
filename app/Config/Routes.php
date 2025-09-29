@@ -85,7 +85,7 @@ $routes->group('public', function($routes){
     $routes->get('consulta_transpo/today', 'Transpo\TransportacionController::today');
 });
 
-$routes->group('cc', function($routes){
+$routes->group('cc', ['filter' => 'authFilter'], function($routes){
     $routes->get('', 'Rsv\Quote::framedQuote');
     $routes->get('cotizador', 'Rsv\Quote::framedQuote');
     $routes->get('test', 'Rsv\Quote::test');
