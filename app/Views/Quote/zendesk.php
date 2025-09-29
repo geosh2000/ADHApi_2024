@@ -473,9 +473,37 @@ const codes = <?= isset($codes) ? json_encode($codes) : '{}' ?>;
 </main>
 
 <!-- Incluir librerías moment y daterangepicker -->
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar if clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = sidebarToggle.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Optional: Close sidebar on window resize if desktop
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
 
 <script>
 // Mapas para mostrar nombre legible en los badges
