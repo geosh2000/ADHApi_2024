@@ -40,8 +40,7 @@ class StrapiController extends BaseController
         
 
         if (isset($result['error'])) {
-            return $this->response->setStatusCode($result['status'])
-                                  ->setJSON(['error' => $result['error']]);
+            return $result;
         }
 
         return $result['data'] ?? null;

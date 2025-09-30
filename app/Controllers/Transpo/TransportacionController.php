@@ -1211,30 +1211,50 @@ A manera de continuar con la reservación del transporte, por favor proporcióna
         }
 
         $strapiCtrl = new \App\Controllers\Cms\StrapiController();
-        $mailContent = $strapiCtrl->getTranspoMailContent($lang, $draft);
+        $strapiError = false;
+
+        try {
+            $mailContent = $strapiCtrl->getTranspoMailContent($lang, $draft);
+
+            // Validar si la respuesta de Strapi viene con error en formato array
+            if (is_array($mailContent) && isset($mailContent['error'])) {
+                $strapiError = true;
+            }
+        } catch (\Throwable $e) {
+            $mailContent = ['no_strapi' => true];
+            $strapiError = true;
+        }
+
         $mailData = $mailContent;
 
+        $urlPrev = 'transpo/mailing/confirmTranspoPreviewCMS';
+        $url = 'transpo/mailing/confirmTranspo';
         
+        if ($strapiError) {
+            $urlPrev = 'transpo/mailing/confirmTranspoPreview';
+            $url = 'transpo/mailing/confirmTranspo_noStrapi';
+        }
         if( $preview ){
-            return $this->response->setBody(
-                    view('transpo/mailing/confirmTranspoPreviewCMS', [
-                    'data' => $rsva[0], 
-                    'mailData' => $mailData,
-                    'transpo' => $transpo, 
-                    'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
-                    'lang' => $lang == 'esp',
-                    'draft' => $draft
-                ])
-            );
+                // Usar la vista alternativa si hubo error de Strapi
+                return $this->response->setBody(
+                    view($urlPrev, [
+                        'data' => $rsva[0],
+                        'mailData' => $mailData,
+                        'transpo' => $transpo,
+                        'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'),
+                        'lang' => $lang == 'esp',
+                        'draft' => $draft
+                    ])
+                );
         }else{
-            $html = minify_html(
-                view('transpo/mailing/confirmTranspo', [
-                    'data' => $rsva[0], 
-                    'mailData' => $mailData,
-                    'transpo' => $transpo, 
-                    'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'), 
-                    'lang' => $lang == 'esp'
-                ])
+                $html = minify_html(
+                    view($url, [
+                        'data' => $rsva[0],
+                        'mailData' => $mailData,
+                        'transpo' => $transpo,
+                        'hotel' => (strpos(strtolower($rsva[0]['hotel']),'atelier') !== false ? 'atpm' : 'oleo'),
+                        'lang' => $lang == 'esp'
+                    ])
                 );
         }
 
