@@ -72,6 +72,7 @@ class htmlTemplates {
         "PAGO EN DESTINO (CAPTURADO)": 'btn-pagadoRegistradoAtpm',
         "PAGADA (CAPTURADO)": 'btn-pagadoRegistradoAtpm',
         "CANCELADA": 'btn-cancel',
+        "NO REQUERIDO": 'btn-cancel',
     }
 }
 

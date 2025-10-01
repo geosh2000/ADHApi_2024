@@ -195,7 +195,7 @@
             $('#loader').css('display', 'flex');
         }else{
             $('#loader').css('display', 'none');
-        }
+        } 
     }
 
 
