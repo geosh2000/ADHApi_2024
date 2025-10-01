@@ -215,13 +215,10 @@
                 $isTranspoActive = in_array($currentPath, ['transpo', 'public/consulta_transpo']);
             ?>
             <li class="nav-item">
-                <a href="#transpoSubmenu"
-                   class="nav-link d-flex align-items-center <?= $isTranspoActive ? 'active' : '' ?>"
-                   tabindex="0"
+                <a class="nav-link d-flex align-items-center <?= $isTranspoActive ? 'active' : '' ?>"
                    data-bs-toggle="collapse"
-                   aria-controls="transpoSubmenu"
-                   aria-expanded="<?= $isTranspoActive ? 'true' : 'false' ?>"
-                   onclick="if(this.href === window.location.href){event.preventDefault();}">
+                   data-bs-target="#transpoSubmenu"
+                   aria-expanded="<?= $isTranspoActive ? 'true' : 'false' ?>">
                     <i class="fa-solid fa-shuttle-space"></i>
                     <span>Transpo</span>
                     <i class="fa-solid fa-chevron-down ms-auto"></i>
@@ -229,12 +226,12 @@
                 <div class="collapse ms-3<?= $isTranspoActive ? ' show' : '' ?>" id="transpoSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="<?= site_url('transpo2') ?>" class="nav-link <?= $currentPath === 'transpo2' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                            <a href="<?= site_url('transpo2') ?>" class="nav-link <?= $currentPath === 'transpo2' ? 'active' : '' ?>">
                                 <i class="fa-solid fa-bus"></i><span>GG Transpo</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= site_url('public/consulta_transpo') ?>" class="nav-link <?= $currentPath === 'public/consulta_transpo' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                            <a href="<?= site_url('public/consulta_transpo') ?>" class="nav-link <?= $currentPath === 'public/consulta_transpo' ? 'active' : '' ?>" target="_blank">
                                 <i class="fa-solid fa-magnifying-glass"></i><span>Consulta</span>
                             </a>
                         </li>
@@ -256,7 +253,7 @@
                 $isAdminActive = in_array($currentPath, ['admin/codes', 'admin/horarios']);
             ?>
             <li class="nav-item">
-                <a href="#adminSubmenu" class="nav-link d-flex align-items-center <?= $isAdminActive ? 'active' : '' ?>" tabindex="0" data-bs-toggle="collapse" aria-controls="adminSubmenu" aria-expanded="<?= $isAdminActive ? 'true' : 'false' ?>" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                <a class="nav-link d-flex align-items-center <?= $isAdminActive ? 'active' : '' ?>" data-bs-toggle="collapse" data-bs-target="#adminSubmenu" aria-controls="adminSubmenu" aria-expanded="<?= $isAdminActive ? 'true' : 'false' ?>">
                     <i class="fa-solid fa-tools"></i>
                     <span>Admin</span>
                     <i class="fa-solid fa-chevron-down ms-auto"></i>
@@ -303,17 +300,17 @@
                 sidebar.classList.toggle('show');
             });
 
-            // Close sidebar if clicking outside on mobile
+            // Close sidebar if clicking outside on mobile, but ignore clicks on collapse toggles
             document.addEventListener('click', function (event) {
                 const isClickInsideSidebar = sidebar.contains(event.target);
                 const isClickOnToggle = sidebarToggle.contains(event.target);
+                const isClickOnCollapseToggle = event.target.closest('[data-bs-toggle="collapse"], [data-bs-target]');
 
-                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                if (!isClickInsideSidebar && !isClickOnToggle && !isClickOnCollapseToggle && sidebar.classList.contains('show')) {
                     sidebar.classList.remove('show');
                 }
             });
 
-            // Optional: Close sidebar on window resize if desktop
             window.addEventListener('resize', function () {
                 if (window.innerWidth >= 768 && sidebar.classList.contains('show')) {
                     sidebar.classList.remove('show');
