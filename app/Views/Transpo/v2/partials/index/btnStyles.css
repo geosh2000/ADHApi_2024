@@ -1,0 +1,125 @@
+/* Botón Cancel - Rojo */
+.btn-cancel {
+    background-color: #FF0000;
+    color: white;
+    border: 1px solid #FF0000;
+}
+.btn-cancel:hover {
+    background-color: #CC0000;
+    border-color: #CC0000;
+}
+.btn-cancel:focus, .btn-cancel.focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.5);
+}
+.btn-cancel:disabled, .btn-cancel.disabled {
+    background-color: #FFCCCC;
+    border-color: #FFCCCC;
+}
+
+/* Botón IncluNoData - Blanco */
+.btn-incluNoData {
+    background-color: #FFFFFF;
+    color: black;
+    border: 1px solid #CCCCCC;
+}
+.btn-incluNoData:hover {
+    background-color: #F0F0F0;
+    border-color: #CCCCCC;
+}
+.btn-incluNoData:focus, .btn-incluNoData.focus {
+    box-shadow: 0 0 0 0.2rem rgba(204, 204, 204, 0.5);
+}
+.btn-incluNoData:disabled, .btn-incluNoData.disabled {
+    background-color: #F9F9F9;
+    border-color: #CCCCCC;
+}
+
+/* Botón IncluSolicitado - Morado */
+.btn-incluSolicitado {
+    background-color: #800080;
+    color: white;
+    border: 1px solid #800080;
+}
+.btn-incluSolicitado:hover {
+    background-color: #660066;
+    border-color: #660066;
+}
+.btn-incluSolicitado:focus, .btn-incluSolicitado.focus {
+    box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.5);
+}
+.btn-incluSolicitado:disabled, .btn-incluSolicitado.disabled {
+    background-color: #E0B3E0;
+    border-color: #E0B3E0;
+}
+
+/* Botón PagoPendiente - Naranja */
+.btn-pagoPendiente {
+    background-color: #FFA500;
+    color: white;
+    border: 1px solid #FFA500;
+}
+.btn-pagoPendiente:hover {
+    background-color: #CC8400;
+    border-color: #CC8400;
+}
+.btn-pagoPendiente:focus, .btn-pagoPendiente.focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 165, 0, 0.5);
+}
+.btn-pagoPendiente:disabled, .btn-pagoPendiente.disabled {
+    background-color: #FFE0B3;
+    border-color: #FFE0B3;
+}
+
+/* Botón PagadoSinIngresar - Amarillo */
+.btn-pagadoSinIngresar {
+    background-color: #FFFF00;
+    color: black;
+    border: 1px solid #FFFF00;
+}
+.btn-pagadoSinIngresar:hover {
+    background-color: #CCCC00;
+    border-color: #CCCC00;
+}
+.btn-pagadoSinIngresar:focus, .btn-pagadoSinIngresar.focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 0, 0.5);
+}
+.btn-pagadoSinIngresar:disabled, .btn-pagadoSinIngresar.disabled {
+    background-color: #FFFFE0;
+    border-color: #FFFFE0;
+}
+
+/* Botón PagadoRegistradoAtpm - Verde */
+.btn-pagadoRegistradoAtpm {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+.btn-pagadoRegistradoAtpm:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+}
+.btn-pagadoRegistradoAtpm:focus, .btn-pagadoRegistradoAtpm.focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.5);
+}
+.btn-pagadoRegistradoAtpm:disabled, .btn-pagadoRegistradoAtpm.disabled {
+    background-color: #c8e6c9;
+    border-color: #c8e6c9;
+}
+
+/* Botón PagadoRegistradoOlcp - Azul Cielo */
+.btn-pagadoRegistradoOlcp {
+    background-color: #87CEEB;
+    color: white;
+    border: 1px solid #87CEEB;
+}
+.btn-pagadoRegistradoOlcp:hover {
+    background-color: #6bb6d8;
+    border-color: #6bb6d8;
+}
+.btn-pagadoRegistradoOlcp:focus, .btn-pagadoRegistradoOlcp.focus {
+    box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.5);
+}
+.btn-pagadoRegistradoOlcp:disabled, .btn-pagadoRegistradoOlcp.disabled {
+    background-color: #d1ecf8;
+    border-color: #d1ecf8;
+}

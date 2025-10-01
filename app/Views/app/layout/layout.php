@@ -158,6 +158,19 @@
                 margin-left: 200px;
             }
         }
+
+        .loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
     <?= $this->renderSection('styles') ?>
 </head>
@@ -216,7 +229,7 @@
                 <div class="collapse ms-3<?= $isTranspoActive ? ' show' : '' ?>" id="transpoSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="<?= site_url('transpo') ?>" class="nav-link <?= $currentPath === 'transpo' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                            <a href="<?= site_url('transpo') ?>" class="nav-link <?= $currentPath === 'transpo' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-bus"></i><span>GG Transpo</span>
                             </a>
                         </li>
@@ -269,6 +282,13 @@
     <main>
         <?= $this->renderSection('content') ?>
     </main>
+
+    <!-- Loader -->
+    <div id="loader" class="loader" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>

@@ -40,7 +40,7 @@ class TransportacionController extends BaseController
         return $h;
     }
 
-    public function index()
+    public function index( $viewUrl = 'Transpo/index' )
     {
         $model = new TransportacionesModel();
 
@@ -86,7 +86,11 @@ class TransportacionController extends BaseController
         $data['folio'] = $folio;
         $data['title'] = "Transportaciones ADH";
 
-        return view('Transpo/index', $data);
+        return view($viewUrl, $data);
+    }
+
+    public function indexv2(){
+       return $this->index( 'Transpo/v2/index' );
     }
 
     public function create()

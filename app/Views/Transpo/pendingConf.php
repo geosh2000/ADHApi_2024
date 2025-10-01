@@ -1,6 +1,11 @@
-<?= $this->extend('layouts/main') ?>
+<?= $this->extend('app/layout/layout') ?>
 
-<?= $this->section('styles') ?>
+<?= $this->section('pageTitle') ?>
+Transportación v2
+<?= $this->endSection() ?>
+
+<?= $this->section('title') ?>
+Transportaciones (Pendientes de Confirmación)
 <?= $this->endSection() ?>
 
 <?php
@@ -23,45 +28,52 @@
 
 <?= $this->section('content') ?>
     <div class="container mt-4 mb-4">
-        <h1 class="mb-4">Envíos pendientes de confirmación</small></h1>
-        <table class="table table-bordered table-sm table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Hotel</th>
-                    <th>Tipo</th>
-                    <th>Folio</th>
-                    <th>Item</th>
-                    <th>Date</th>
-                    <th>Pax</th>
-                    <th>Guest</th>
-                    <th>Time</th>
-                    <th>Flight</th>
-                    <th>Airline</th>
-                    <th>Pick Up</th>
-                    <th>Ticket Qwantour</th>
-                    <th>Ticket Confirmación</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($transportaciones as $transpo): ?>
-                    <tr id="transpo-<?= $transpo['id'] ?>">
-                        <?php foreach( $columns as $field ): ?>
-                            <td><?= $transpo[$field] ?></td>
+        <div class="card shadow-sm p-4">
+            <div class="d-flex justify-content-start align-items-center mb-4">
+                <a href="<?= site_url('transpo2') ?>" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Regresar al Dashboard
+                </a>
+            </div>
+            <h4 class="mb-4">Envíos pendientes de confirmación</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Hotel</th>
+                            <th>Tipo</th>
+                            <th>Folio</th>
+                            <th>Item</th>
+                            <th>Date</th>
+                            <th>Pax</th>
+                            <th>Guest</th>
+                            <th>Time</th>
+                            <th>Flight</th>
+                            <th>Airline</th>
+                            <th>Pick Up</th>
+                            <th>Ticket Qwantour</th>
+                            <th>Ticket Confirmación</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($transportaciones as $transpo): ?>
+                            <tr id="transpo-<?= $transpo['id'] ?>">
+                                <?php foreach( $columns as $field ): ?>
+                                    <td><?= $transpo[$field] ?></td>
+                                <?php endforeach; ?>
+                                <td class="text-center">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <?php if( permiso("sendConfirm") ): ?>
+                                            <button class="actionBtn btn btn-success sendConfirm" data-id="<?= $transpo['id'] ?>"><i class="fas fa-envelope-open-text"></i></button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
-                        <td class="text-center">
-                            <div class="d-flex flex-wrap justify-content-center">
-                                <?php if( permiso("sendConfirm") ): ?>
-                                    <button class="actionBtn btn btn-success sendConfirm" data-id="<?= $transpo['id'] ?>"><i class="fas fa-envelope-open-text"></i></button>
-                                <?php endif; ?>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-
-
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 <?= $this->endSection() ?>
 
@@ -79,6 +91,7 @@
         }
 
         $(document).on('click', '.sendConfirm', function() {
+            console.log('Clicked sendConfirm button');
             startLoader();
             var id = $(this).attr('data-id'); // Obtiene el ID después del guion
             var url = '<?= site_url('transpo/conf') ?>';

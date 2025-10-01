@@ -127,6 +127,10 @@ $routes->group('admin', ['filter' => 'authFilter'], function($routes){
     $routes->get('home/schedules', 'Admin\HorarioController::homeSchedules');
 });
 
+$routes->group('transpo2', ['filter' => 'authFilter'], function($routes){
+    $routes->get('/', 'Transpo\TransportacionController::indexv2');
+});
+
 $routes->group('transpo', ['filter' => 'authFilter'], function($routes){
     $routes->get('/', 'Transpo\TransportacionController::index');
     $routes->get('create', 'Transpo\TransportacionController::create');
