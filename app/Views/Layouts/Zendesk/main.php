@@ -139,8 +139,8 @@
 </script>
 
 <!-- BASE JS FOR ZENDESK -->
-<!-- <script src="https://atelier-cc.azurewebsites.net/public/js/zendesk/base.js"></script> -->
-<script src="<?= base_url('public/js/zendesk/base.js') ?>"></script>
+<script src="https://atelier-cc.azurewebsites.net/public/js/zendesk/base.js"></script>
+<!-- <script src="<?= base_url('public/js/zendesk/base.js') ?>"></script> -->
 <script>
     $(document).ready(function () {
         console.log("Main grupo de funciones ready");
