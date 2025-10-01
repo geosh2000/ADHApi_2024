@@ -25,6 +25,11 @@ Transportaciones (Recap Dia Siguiente)
                 <i class="bi bi-list-ul"></i> Listado de Transportaciones
             </div>
             <div class="card-body p-0">
+                <div class="d-flex justify-content-end p-2">
+                    <button id="copyTableImageBtn" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-clipboard"></i> Copiar como Imagen
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -103,6 +108,7 @@ Transportaciones (Recap Dia Siguiente)
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const exportModalEl = document.getElementById('exportModal');
@@ -123,6 +129,23 @@ Transportaciones (Recap Dia Siguiente)
             })
             .catch(err => {
                 bodyEl.textContent = 'Error: ' + err;
+            });
+        });
+
+        const copyBtn = document.getElementById('copyTableImageBtn');
+        copyBtn.addEventListener('click', function () {
+            const tableEl = document.querySelector('.table-responsive');
+            if (!tableEl) return;
+
+            html2canvas(tableEl).then(canvas => {
+                canvas.toBlob(blob => {
+                    const item = new ClipboardItem({ "image/png": blob });
+                    navigator.clipboard.write([item]).then(() => {
+                        alert('Tabla copiada como imagen al portapapeles');
+                    }).catch(err => {
+                        alert('Error al copiar: ' + err);
+                    });
+                });
             });
         });
     });
