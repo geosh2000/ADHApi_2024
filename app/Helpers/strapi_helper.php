@@ -123,14 +123,23 @@ function strapiApplyTransforms($value, array $transforms, array $context = []) {
                 if ($fn === 'date') {
                     // Si el parámetro corresponde a una clave en $context, úsalo
                     if (isset($context[$param])) {
-                        $format = $context[$param];
+                        if (is_callable($context[$param])) {
+                            // Ejecutar Closure
+                            $format = $context[$param]($value);
+                        } else {
+                            $format = $context[$param];
+                        }
                     } else {
                         $format = $param;
                     }
 
                     try {
-                        $dt = new DateTime($value);
-                        $value = $dt->format($format);
+                        if ($value === null) {
+                            $value = 'NA';
+                        } else {
+                            $dt = new DateTime($value);
+                            $value = $dt->format($format);
+                        }
                     } catch (Exception $e) {
                         $value = null; // deja que caiga al "default"
                     }

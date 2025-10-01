@@ -229,7 +229,7 @@
                 <div class="collapse ms-3<?= $isTranspoActive ? ' show' : '' ?>" id="transpoSubmenu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="<?= site_url('transpo') ?>" class="nav-link <?= $currentPath === 'transpo' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                            <a href="<?= site_url('transpo2') ?>" class="nav-link <?= $currentPath === 'transpo2' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                                 <i class="fa-solid fa-bus"></i><span>GG Transpo</span>
                             </a>
                         </li>

@@ -93,7 +93,7 @@
                                         'item' => $r['item'],
                                         'guest' => $r['guest'],
                                         'hotel' => $r['hotel'],
-                                        'status' => $r['status'],
+                                        // 'status' => $r['status'], // <--- ELIMINADO status global
                                         'correo' => $r['correo'] ?? '',
                                         'phone' => $r['phone'] ?? '',
                                         'precio' => $r['precio'] ?? '',
@@ -130,29 +130,13 @@
                             <div class="max-h-[90vh] overflow-y-auto pr-2">
                                 <div class="space-y-6">
                                     <?php foreach ($grouped as $key => $data): ?>
-                                        <?php
-                                            $statusText = strtolower($data['status']);
-                                            if (strpos($statusText, 'destino') !== false) {
-                                                // efecto llamativo tipo warning que "flashee"
-                                                $statusClass = 'bg-green-200 text-red-800 animate-pulse';
-                                            } elseif (strpos($statusText, 'capturad') !== false) {
-                                                $statusClass = 'bg-green-100 text-green-800'; // success
-                                            } elseif (strpos($statusText, 'no facturado') !== false || strpos($statusText, 'cancelad') !== false) {
-                                                $statusClass = 'bg-red-100 text-red-800'; // danger
-                                            } elseif (strpos($statusText, 'pendiente') !== false) {
-                                                // efecto llamativo tipo warning que "flashee"
-                                                $statusClass = 'bg-yellow-200 text-yellow-800 animate-pulse';
-                                            } else {
-                                                $statusClass = 'bg-yellow-100 text-yellow-800'; // warn
-                                            }
-                                        ?>
                                         <div class="bg-white/30 backdrop-blur-md rounded-2xl shadow-xl p-6 w-full">
                                             <h2 class="text-xl font-bold text-blue-700 mb-4">
                                                 Folio: <?= esc($data['folio']) ?> - <?= esc($data['guest']) ?> (<?= esc($data['item']) ?>)
                                             </h2>
                                             <div class="mb-6 grid grid-cols-2 gap-x-6 gap-y-2 text-gray-700 text-sm sm:text-base">
                                                 <div><i class="fa-solid fa-hotel text-blue-700 mr-2"></i><?= esc($data['hotel']) ?></div>
-                                                <div class="inline-block px-2 py-1 rounded <?= $statusClass ?>"><i class="fa-solid fa-tag mr-2"></i><?= esc($data['status']) ?></div>
+                                                <!-- Ya no se muestra status global aquí -->
                                                 <div><i class="fa-solid fa-envelope text-red-600 mr-2"></i><?= esc($data['correo']) ?></div>
                                                 <div><i class="fa-solid fa-phone text-purple-600 mr-2"></i><?= esc($data['phone']) ?></div>
                                             </div>
@@ -160,7 +144,28 @@
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <?php if ($data['entrada'] && !empty($data['entrada']['time'])): ?>
                                                         <div class="bg-white/80 rounded-lg p-4 mb-4 md:mb-0">
-                                                            <h3 class="font-semibold text-lg mb-2">Entrada</h3>
+                                                            <h3 class="font-semibold text-lg mb-2 flex items-center gap-2">
+                                                                Entrada
+                                                                <?php
+                                                                    $entradaStatus = isset($data['entrada']['status']) ? strtolower($data['entrada']['status']) : '';
+                                                                    if (strpos($entradaStatus, 'destino') !== false) {
+                                                                        $entradaStatusClass = 'bg-green-200 text-red-800 animate-pulse';
+                                                                    } elseif (strpos($entradaStatus, 'capturad') !== false) {
+                                                                        $entradaStatusClass = 'bg-green-100 text-green-800';
+                                                                    } elseif (strpos($entradaStatus, 'no facturado') !== false || strpos($entradaStatus, 'cancelad') !== false) {
+                                                                        $entradaStatusClass = 'bg-red-100 text-red-800';
+                                                                    } elseif (strpos($entradaStatus, 'pendiente') !== false) {
+                                                                        $entradaStatusClass = 'bg-yellow-200 text-yellow-800 animate-pulse';
+                                                                    } else {
+                                                                        $entradaStatusClass = 'bg-yellow-100 text-yellow-800';
+                                                                    }
+                                                                ?>
+                                                                <?php if (!empty($data['entrada']['status'])): ?>
+                                                                    <div class="inline-block px-2 py-1 rounded <?= $entradaStatusClass ?>">
+                                                                        <i class="fa-solid fa-tag mr-1"></i><?= esc($data['entrada']['status']) ?>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </h3>
                                                             <ul class="divide-y divide-gray-300 text-gray-700 text-sm sm:text-base">
                                                                 <?php if (!empty($data['entrada']['date'])): ?>
                                                                     <li class="py-1"><i class="fa-regular fa-calendar text-indigo-600 mr-2"></i><?= esc($data['entrada']['date']) ?></li>
@@ -181,13 +186,37 @@
                                                         </div>
                                                     <?php else: ?>
                                                         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg mb-4 md:mb-0">
-                                                            <h3 class="font-semibold text-lg mb-2">Entrada</h3>
+                                                            <h3 class="font-semibold text-lg mb-2 flex items-center gap-2">
+                                                                Entrada
+                                                                <!-- No status si no hay servicio -->
+                                                            </h3>
                                                             <p>Servicio NO solicitado</p>
                                                         </div>
                                                     <?php endif; ?>
                                                     <?php if ($data['salida'] && !empty($data['salida']['time'])): ?>
                                                         <div class="bg-white/80 rounded-lg p-4">
-                                                            <h3 class="font-semibold text-lg mb-2">Salida</h3>
+                                                            <h3 class="font-semibold text-lg mb-2 flex items-center gap-2">
+                                                                Salida
+                                                                <?php
+                                                                    $salidaStatus = isset($data['salida']['status']) ? strtolower($data['salida']['status']) : '';
+                                                                    if (strpos($salidaStatus, 'destino') !== false) {
+                                                                        $salidaStatusClass = 'bg-green-200 text-red-800 animate-pulse';
+                                                                    } elseif (strpos($salidaStatus, 'capturad') !== false) {
+                                                                        $salidaStatusClass = 'bg-green-100 text-green-800';
+                                                                    } elseif (strpos($salidaStatus, 'no facturado') !== false || strpos($salidaStatus, 'cancelad') !== false) {
+                                                                        $salidaStatusClass = 'bg-red-100 text-red-800';
+                                                                    } elseif (strpos($salidaStatus, 'pendiente') !== false) {
+                                                                        $salidaStatusClass = 'bg-yellow-200 text-yellow-800 animate-pulse';
+                                                                    } else {
+                                                                        $salidaStatusClass = 'bg-yellow-100 text-yellow-800';
+                                                                    }
+                                                                ?>
+                                                                <?php if (!empty($data['salida']['status'])): ?>
+                                                                    <div class="inline-block px-2 py-1 rounded <?= $salidaStatusClass ?>">
+                                                                        <i class="fa-solid fa-tag mr-1"></i><?= esc($data['salida']['status']) ?>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </h3>
                                                             <ul class="divide-y divide-gray-300 text-gray-700 text-sm sm:text-base">
                                                                 <?php if (!empty($data['salida']['date'])): ?>
                                                                     <li class="py-1"><i class="fa-regular fa-calendar text-indigo-600 mr-2"></i><?= esc($data['salida']['date']) ?></li>
@@ -208,7 +237,10 @@
                                                         </div>
                                                     <?php else: ?>
                                                         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg">
-                                                            <h3 class="font-semibold text-lg mb-2">Salida</h3>
+                                                            <h3 class="font-semibold text-lg mb-2 flex items-center gap-2">
+                                                                Salida
+                                                                <!-- No status si no hay servicio -->
+                                                            </h3>
                                                             <p>Servicio NO solicitado</p>
                                                         </div>
                                                     <?php endif; ?>

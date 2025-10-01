@@ -14,7 +14,12 @@
     $format = $lang ? 'd M Y' : 'F jS Y';
     $contact = $mailData['mails'][0]['site']['contact_fields'];
     $sources = compact('data', 'mailData', 'transpo','contact');
-    $context = ['formatDate' => $lang ? 'd M Y' : 'F jS Y', 'formatTime' => 'h:i A'];
+    $context = [
+        'formatDate' => $lang ? 'd M Y' : 'F jS Y',
+        'formatTime' => function($value) {
+            return $value === null ? 'NA' : date('h:i A', strtotime($value));
+        }
+    ];
 
     $strapiVars = strapiVar($mailData['mails'][0]['variables']['body'], $sources, $context);
     $contactVars = strapiVar($mailData['mails'][0]['variables']['footer'], $sources, $context);
@@ -75,4 +80,3 @@
     
     
                             
-    
