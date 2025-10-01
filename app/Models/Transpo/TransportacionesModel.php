@@ -271,32 +271,30 @@ class TransportacionesModel extends BaseModel
             $this->builder->where('id', $id);
         }
 
-        // Preparar $udata para afterUpdateAction
-        $udata = [];
-        foreach ($old as $row) {
-            $finalStatus = $data['status'] ?? null;
-            if (isset($data['status']) && strpos($data['status'], 'CAPTURA PENDIENTE') !== false) {
-                if (is_null($row['flight']) && is_null($row['time'])) {
-                    $finalStatus = 'NO CAPTURADO';
-                } else {
-                    $finalStatus = $data['status'];
+        // Lógica especial para status con "CAPTURA PENDIENTE"
+        if (isset($data['status']) && strpos($data['status'], 'CAPTURA PENDIENTE') !== false) {
+            // Determinar el valor final de status para afterUpdateAction
+            // Si flight y time son ambos nulos, finalStatus = 'NO CAPTURADO', si no, el status actual
+            $finalStatus = $data['status'];
+            if (!empty($old) && array_key_exists('flight', $old[0]) && array_key_exists('time', $old[0])) {
+                if (is_null($old[0]['flight']) && is_null($old[0]['time'])) {
+                    $finalStatus = 'NO REQUERIDO';
                 }
             }
-            $udata[$row['id']] = array_merge($data, ['status' => $finalStatus]);
+            $data['status'] = $finalStatus;
+            $this->builder->set('status', "IF(flight IS NULL AND time IS NULL, 'NO REQUERIDO', '".$finalStatus."')", false);
+            unset($data['status']);
         }
 
-        // Lógica especial para status con "CAPTURA PENDIENTE" solo para el set SQL, no modificar $data global
-        if (isset($data['status']) && strpos($data['status'], 'CAPTURA PENDIENTE') !== false) {
-            $this->builder->set('status', "IF(flight IS NULL AND time IS NULL, 'NO CAPTURADO', '".$data['status']."')", false);
-            $tmpData = $data;
-            unset($tmpData['status']);
-            $this->builder->set($tmpData);
-        } else {
-            $this->builder->set($data);
+        $this->builder->set($data);
+
+        // Si la lógica anterior ajustó $data['status'], necesitamos que $data para afterUpdateAction tenga el valor corregido
+        if (isset($finalStatus)) {
+            $data['status'] = $finalStatus;
         }
 
         if( $result = $this->builder->update() ){
-            $this->afterUpdateAction($id, $udata, $old);
+            $this->afterUpdateAction($id, $data, $old);
             return $result;
         }else{
             return false;
