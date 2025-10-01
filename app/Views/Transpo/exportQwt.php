@@ -29,12 +29,8 @@ Transportaciones (Enviar a QWT)
 
 <?= $this->section('content') ?>
     <div class="container mt-4 mb-4">
+         <?= $this->include('Transpo/v2/partials/index/quick-actions') ?>
         <div class="card shadow-sm p-4">
-            <div class="d-flex justify-content-start align-items-center mb-4">
-                <a href="<?= site_url('transpo2') ?>" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Regresar al Dashboard
-                </a>
-            </div>
             <h4 class="mb-4 fw-bold">Exportación de Servicios <small class="text-muted">(Revision)</small></h4>
             <table class="table table-bordered table-sm table-striped">
                 <thead class="table-dark">

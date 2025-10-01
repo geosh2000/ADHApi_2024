@@ -270,7 +270,28 @@ class TransportacionesModel extends BaseModel
         }else{
             $this->builder->where('id', $id);
         }
+
+        // Lógica especial para status con "CAPTURA PENDIENTE"
+        if (isset($data['status']) && strpos($data['status'], 'CAPTURA PENDIENTE') !== false) {
+            // Determinar el valor final de status para afterUpdateAction
+            // Si flight y time son ambos nulos, finalStatus = 'NO CAPTURADO', si no, el status actual
+            $finalStatus = $data['status'];
+            if (!empty($old) && array_key_exists('flight', $old[0]) && array_key_exists('time', $old[0])) {
+                if (is_null($old[0]['flight']) && is_null($old[0]['time'])) {
+                    $finalStatus = 'NO CAPTURADO';
+                }
+            }
+            $data['status'] = $finalStatus;
+            $this->builder->set('status', "IF(flight IS NULL AND time IS NULL, 'NO CAPTURADO', '".$finalStatus."')", false);
+            unset($data['status']);
+        }
+
         $this->builder->set($data);
+
+        // Si la lógica anterior ajustó $data['status'], necesitamos que $data para afterUpdateAction tenga el valor corregido
+        if (isset($finalStatus)) {
+            $data['status'] = $finalStatus;
+        }
 
         if( $result = $this->builder->update() ){
             $this->afterUpdateAction($id, $data, $old);

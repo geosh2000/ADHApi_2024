@@ -10,17 +10,15 @@ Transportaciones (Recap Dia Siguiente)
 
 <?= $this->section('content') ?>
 <div class="container py-5">
+     <?= $this->include('Transpo/v2/partials/index/quick-actions') ?>
     <div class="card shadow p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="<?= site_url('transpo2') ?>" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Regresar al Dashboard
-            </a>
+            <h4 class="text-center mb-4">Recap Servicios del Día Siguiente</h4>
             <button id="exportNextDayBtn" class="btn btn-primary">
                 Exportar Next Day
             </button>
         </div>
 
-        <h4 class="text-center mb-4">Recap Servicios del Día Siguiente</h4>
 
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white">

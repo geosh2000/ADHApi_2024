@@ -28,12 +28,8 @@ Transportaciones (Pendientes de Confirmación)
 
 <?= $this->section('content') ?>
     <div class="container mt-4 mb-4">
+        <?= $this->include('Transpo/v2/partials/index/quick-actions') ?>
         <div class="card shadow-sm p-4">
-            <div class="d-flex justify-content-start align-items-center mb-4">
-                <a href="<?= site_url('transpo2') ?>" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Regresar al Dashboard
-                </a>
-            </div>
             <h4 class="mb-4">Envíos pendientes de confirmación</h4>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm table-striped">
