@@ -280,10 +280,10 @@ class TransportacionesModel extends BaseModel
                 if (is_null($old[0]['flight']) && is_null($old[0]['time']) && !isset($data['flight']) && !isset($data['time'])) {
                     $finalStatus = 'NO REQUERIDO';
                 }
+                $data['status'] = $finalStatus;
+                $this->builder->set('status', "IF(flight IS NULL AND time IS NULL, 'NO REQUERIDO', '".$finalStatus."')", false);
+                unset($data['status']);
             }
-            $data['status'] = $finalStatus;
-            $this->builder->set('status', "IF(flight IS NULL AND time IS NULL, 'NO REQUERIDO', '".$finalStatus."')", false);
-            unset($data['status']);
         }
 
         $this->builder->set($data);
