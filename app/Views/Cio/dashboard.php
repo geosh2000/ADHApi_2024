@@ -1,24 +1,15 @@
-<!-- CARGA LAYOUT DEL DASHBOARD DE CIO -->
-<?= $this->extend('Layouts/cio-dashboard') ?>
+<?= $this->extend('Cio/layouts/layout') ?>
 
-<!-- CONTENIDO PRINCIPAL -->
-<?= $this->section('content') ?>
+<?= $this->section('pageTitle') ?>
+Dashboard CC (CIO)
+<?= $this->endSection() ?>
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<?= $this->section('title') ?>
+Dashboard CC
+<?= $this->endSection() ?>
 
+<?= $this->section('styles') ?>
 <style>
-    .mainWindow {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
     .quote {
         font-size: 2rem;
         font-weight: bold;
@@ -26,68 +17,28 @@
         text-align: center;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
-
-    .copyable-element {
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .copyable-element:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-
-    .copy-overlay {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        cursor: pointer;
+    #legend {
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 5px;
+        padding: 10px;
         z-index: 1000;
-    }
-
-    .copyable-element:hover .copy-overlay {
-        opacity: 1;
-    }
-
-    .copy-overlay:hover {
-        background: rgba(0,0,0,0.9);
-    }
-
-    .copy-overlay.copying {
-        background: #007bff;
-    }
-
-    .copy-overlay.success {
-        background: #28a745;
-    }
-
-    .copy-overlay.error {
-        background: #dc3545;
+        font-family: Arial, sans-serif;
     }
 </style>
+<?= $this->endSection() ?>
 
-<div class="mainWindow copyable-element" data-copy-name="Dashboard CIO - Quote">
-    <div class="copy-overlay" onclick="copyElementAsImage(this)">
-        <i class="fas fa-copy"></i>
-    </div>
+<!-- CONTENIDO PRINCIPAL -->
+<?= $this->section('mainContent') ?>
     <div class="container">
         <div class="quote">
             "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work. And the only way to do great work is to love what you do." - Steve Jobs
         </div>
     </div>
-</div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <script>
 // Función para copiar elemento como imagen
 async function copyElementAsImage(button) {

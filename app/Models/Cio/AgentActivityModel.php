@@ -56,8 +56,8 @@ class AgentActivityModel extends Model
             // Agrega el conteo de llamadas y rechazadas al login_id
             $queryLogin .= "WHEN login_id = '$loginId' THEN CONCAT('$teamShort: $loginId (C: ', ".$count['calls'].", ' || R:', ".$count['rejected'].", ')') ";
         }
-        $queryLogin = "CASE $queryLogin ELSE login_id END as login_id";
-        
+        $queryLogin = $queryLogin === '' ? "login_id" : "CASE $queryLogin ELSE login_id END as login_id";
+
         return $this->select("
             $queryLogin,
             CASE

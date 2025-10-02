@@ -277,7 +277,7 @@ class TransportacionesModel extends BaseModel
             // Si flight y time son ambos nulos, finalStatus = 'NO CAPTURADO', si no, el status actual
             $finalStatus = $data['status'];
             if (!empty($old) && array_key_exists('flight', $old[0]) && array_key_exists('time', $old[0])) {
-                if (is_null($old[0]['flight']) && is_null($old[0]['time'])) {
+                if (is_null($old[0]['flight']) && is_null($old[0]['time']) && !isset($data['flight']) && !isset($data['time'])) {
                     $finalStatus = 'NO REQUERIDO';
                 }
             }

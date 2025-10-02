@@ -1,50 +1,27 @@
-<!-- CARGA LAYOUT DEL DASHBOARD DE CIO -->
-<?= $this->extend('layouts/cio-dashboard') ?>
+<?= $this->extend('Cio/layouts/layout') ?>
+
+<?= $this->section('pageTitle') ?>
+Dashboard CC (CIO)
+<?= $this->endSection() ?>
+
+<?= $this->section('title') ?>
+Dashboard CC - Call Journey - - - - <?= implode(",", $params['queue']) ?> <small>(<?= $params['inicio'] ?> a <?= $params['fin'] ?>)</small> - <small>(Last Update: <?= $lastUpdate ?>)</small>
+<?= $this->endSection() ?>
 
 <!-- CONTENIDO PRINCIPAL -->
-<?= $this->section('content') ?>
+<?= $this->section('mainContent') ?>
 
-<style>
-    .mainWindow {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 58px);
-    }
+<div class="container flex-grow-1 p-3">
+    <?= $this->include('Cio/partials/filter') ?>
 
-    .quote {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #333;
-        text-align: center;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    }
-
-    #legend {
-        background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente blanco */
-        border-radius: 5px; /* Bordes redondeados */
-        padding: 10px; /* Espaciado interno */
-        
-        z-index: 1000; /* Coloca la leyenda sobre el gráfico */
-        font-family: Arial, sans-serif; /* Fuente */
-    }
-</style>
-
-<div class="mainWindow">
-    <div class="container">
-        <!-- <h2><small>(<?= $params['inicio'] ?> a <?= $params['fin'] ?>)</small></h2> -->
-        <span><small>(Last Update: <?= $lastUpdate ?>)</small></span>
-    </div>
-    
-    
     <!-- CHARTS -->
-    <div class="container" id="charts">
+    <div class="container mt-4" id="charts">
        <div id="myChart1" style="width: 100%; height: 600px;"></div>
     </div>
-</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>

@@ -122,7 +122,7 @@ class QueryCalls extends BaseController {
             "fin"   => $end
         ];
 
-        $data = ['data' => $response, 'totals' => $responseTotals[0], "params" => $params, "lastUpdate" => $lu];
+        $data = ['data' => $response, 'totals' => $responseTotals[0], "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/calls')];
 
         // gg_response(200, $data);
 
@@ -178,14 +178,15 @@ class QueryCalls extends BaseController {
         return view('Cio/db-char-type', ['type' => $response, "title" => "Disposiciones", "params" => $params, "lastUpdate" => $lu]);
             
     }
-    
-    public function queues( $start = "weekstart", $end = "weekend" ){
+
+    public function queues( $queue = "Voz_Reservas,Voz_Grupos", $start = "weekstart", $end = "weekend" ){
 
         $lu = $this->getLastUpdate();
         $builder = $this->db->table('llamadas_cio');
        
         $start = $start == "weekstart" || $start == "" ? $this->weekDays() : $start;
         $end = $end == "weekend" || $end == "" ? $this->weekDays( true ) : $end;
+        $queue = explode(',',$queue);
 
         $select = "cola as Field, COUNT(*) as val";
         
@@ -213,10 +214,11 @@ class QueryCalls extends BaseController {
 
         $params = [
             "inicio" => $start,
-            "fin"   => $end
+            "fin"   => $end,
+            "queue" => $queue
         ];
 
-        return view('Cio/db-char-type', ['type' => $response, "title" => "Colas", "params" => $params, "lastUpdate" => $lu]);
+        return view('Cio/db-char-type', ['type' => $response, "title" => "Colas", "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/queues') ]);
             
     }
     
@@ -302,10 +304,11 @@ class QueryCalls extends BaseController {
             
     }
 
-    public function callJourney(  $start = "weekstart", $end = "weekend"  ){
+    public function callJourney(  $queue = "Voz_Reservas,Voz_grupos", $start = "weekstart", $end = "weekend"  ){
     
         $start = $start == "weekstart" || $start == "" ? $this->weekDays() : $start;
         $end = $end == "weekend" || $end == "" ? $this->weekDays( true ) : $end;
+        $queue = explode(',',$queue);
 
         $lu = $this->getLastUpdate();
 
@@ -319,6 +322,7 @@ class QueryCalls extends BaseController {
             ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
             ->where("destino_original !=", '')
+            ->whereIn("servicio_campana", $queue)
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("transferido_desde", "")
             ->orderBy('Field')
@@ -333,6 +337,7 @@ class QueryCalls extends BaseController {
             ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
             ->where("destino_original !=", '')
+            ->whereIn("servicio_campana", $queue)
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("transferido_desde", "")
             ->groupBy(['field','dest']);
@@ -345,6 +350,7 @@ class QueryCalls extends BaseController {
             ->where("escenario !=", 'default bridge scenario')
             ->where("escenario != 'Encuesta'")
             ->whereNotIn('id', ['' , 'Global ID'])
+            ->whereIn("servicio_campana", $queue)
             ->where("destino_original !=", '')
             ->where("Fecha BETWEEN '$start' AND '$end'")
             ->where("transferido_desde", "")
@@ -360,10 +366,11 @@ class QueryCalls extends BaseController {
 
         $params = [
             "inicio" => $start,
-            "fin"   => $end
+            "fin"   => $end,
+            "queue" => $queue
         ];
 
-        return view('Cio/db-char-sankey', ['data' => $result, "title" => "Call Journey", "params" => $params, "lastUpdate" => $lu]);
+        return view('Cio/db-char-sankey', ['data' => $result, "title" => "Call Journey", "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/callJourney') ]);
     }
 
     protected function weekDays( $end = false ){

@@ -56,15 +56,24 @@ $routes->group('cio', function($routes){
         $routes->get('disposicion/(:any)', 'Cio\QueryCalls::types/$1');
         $routes->get('disposicion/(:any)/(:any)', 'Cio\QueryCalls::types/$1/$2');
         $routes->get('disposicion/(:any)/(:any)/(:any)', 'Cio\QueryCalls::types/$1/$2/$3');
+        
+        // Queues
         $routes->get('queues', 'Cio\QueryCalls::queues');
+        $routes->get('queues/(:any)', 'Cio\QueryCalls::queues/$1');
+        $routes->get('queues/(:any)/(:any)', 'Cio\QueryCalls::queues/$1/$2');
+        $routes->get('queues/(:any)/(:any)/(:any)', 'Cio\QueryCalls::queues/$1/$2/$3');
+
         $routes->get('langs', 'Cio\QueryCalls::langs');
         $routes->get('hotels', 'Cio\QueryCalls::hotels');
         $routes->get('hotels/(:any)', 'Cio\QueryCalls::hotels/$1');
         $routes->get('hotels/(:any)/(:any)', 'Cio\QueryCalls::hotels/$1/$2');
         $routes->get('hotels/(:any)/(:any)/(:any)', 'Cio\QueryCalls::hotels/$1/$2/$3');
+
+        // CallJourney
         $routes->get('callJourney', 'Cio\QueryCalls::callJourney');
         $routes->get('callJourney/(:any)', 'Cio\QueryCalls::callJourney/$1');
         $routes->get('callJourney/(:any)/(:any)', 'Cio\QueryCalls::callJourney/$1/$2');
+        $routes->get('callJourney/(:any)/(:any)/(:any)', 'Cio\QueryCalls::callJourney/$1/$2/$3');
         $routes->get('calls', 'Cio\QueryCalls::calls');
         $routes->get('calls/(:any)', 'Cio\QueryCalls::calls/$1/');
         $routes->get('calls/(:any)/(:any)/(:any)', 'Cio\QueryCalls::calls/$1/$2/$3');
