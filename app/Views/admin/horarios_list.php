@@ -42,6 +42,12 @@ Horarios de Agentes
         </div>
     </form>
 
+    <div class="mb-4">
+        <button type="button" class="btn btn-outline-primary me-2" id="prevWeekBtn">Previous Week</button>
+        <button type="button" class="btn btn-outline-primary me-2" id="thisWeekBtn">This Week</button>
+        <button type="button" class="btn btn-outline-primary" id="nextWeekBtn">Next Week</button>
+    </div>
+
     <!-- Multi-edit form (hidden by default) -->
     <div id="multiEditFormContainer" class="mb-3 d-none">
         <form id="multiEditForm" method="post" action="<?= site_url('admin/horarios/save') ?>" class="border p-3 rounded bg-light">
@@ -253,6 +259,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize constraints on page load
     updateFechaFinConstraints();
+
+    // Week navigation buttons logic
+    function setWeekRange(startDate, isThisWeek = false) {
+        const monday = new Date(startDate);
+        monday.setDate(monday.getDate() - monday.getDay() + (isThisWeek ? 1 : 0)); // Monday
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6); // Sunday
+        fechaInicioInput.value = monday.toISOString().split('T')[0];
+        fechaFinInput.value = sunday.toISOString().split('T')[0];
+        fechaInicioInput.form.submit();
+    }
+
+    document.getElementById('prevWeekBtn').addEventListener('click', function() {
+        const baseDate = fechaInicioInput.value ? new Date(fechaInicioInput.value) : new Date();
+        baseDate.setDate(baseDate.getDate() - 7);
+        setWeekRange(baseDate);
+    });
+
+    document.getElementById('thisWeekBtn').addEventListener('click', function() {
+        setWeekRange(new Date(), true);
+    });
+
+    document.getElementById('nextWeekBtn').addEventListener('click', function() {
+        const baseDate = fechaInicioInput.value ? new Date(fechaInicioInput.value) : new Date();
+        baseDate.setDate(baseDate.getDate() + 7);
+        setWeekRange(baseDate);
+    });
 
     // Inline edit and create functionality
     const table = document.getElementById('horariosTable');

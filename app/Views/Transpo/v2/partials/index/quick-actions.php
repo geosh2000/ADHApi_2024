@@ -1,3 +1,5 @@
+<?php $currentUrl = strtok(current_url(), '?'); ?>
+
 <!-- Sección de Acciones -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-secondary text-white">
@@ -7,15 +9,18 @@
         </div>
         <div class="card-body">
             <div class="d-flex flex-wrap justify-content-center gap-2">
+                <?php if( $currentUrl != site_url('transpo2') ): ?>
                 <a href="<?= site_url('transpo2') ?>" class="btn btn-outline-success">
                     <i class="bi bi-card-list"></i> Dashboard
                 </a>
+                <?php endif; ?>
 
                 <a href="<?= site_url('transpo/pendingConf') ?>" class="btn btn-info">
                     <i class="fas fa-clock me-1"></i>Por Confirmar
                 </a>
                 
-                <?php if( permiso("createTransRegs") ): ?>
+                
+                <?php if( permiso("createTransRegs") && $currentUrl === site_url('transpo2') ): ?>
                 <button type="button" class="create-button btn btn-success">
                     <i class="fas fa-plus me-1"></i>Crear
                 </button>
@@ -25,7 +30,7 @@
                     <i class="fas fa-calendar-day me-1"></i>Next Day
                 </a>
                 
-                <?php if( permiso("importTransIncluded") ): ?>
+                <?php if( permiso("importTransIncluded") && $currentUrl === site_url('transpo2') ): ?>
                 <div class="btn-group">
                     <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-download me-1"></i>Importar

@@ -129,7 +129,7 @@ class DatabaseController extends BaseController
         // Quitar cancelaciones
         $this->getCanceled($days);
 
-        return redirect()->to(site_url('transpo').'?'.$_SERVER['QUERY_STRING'])
+        return redirect()->to(site_url('transpo2').'?'.$_SERVER['QUERY_STRING'])
                 ->with('success', 'Se importaron '.count($dbArray).' registros');
 
         // gg_response(200, ["error" => false, "Registros construidos" => count($dbArray), "Registros Insertados" => $db->affectedRows(), "data" => $dbArray]);

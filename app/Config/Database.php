@@ -131,7 +131,8 @@ class Database extends Config
 
     public array $production = [
         'DSN'         => '',
-        'hostname'    => '65.99.248.168',
+        'hostname'    => '65.99.205.188',
+        // 'hostname'    => '65.99.248.168',
         'username'     => 'cycoasis_apirest_admin',
         'password'     => '@8370Apirest',
         'database'    => 'cycoasis_adh',
