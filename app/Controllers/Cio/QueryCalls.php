@@ -410,10 +410,20 @@ class QueryCalls extends BaseController {
         return $lu['LastUpdate'];
     }
 
-    public function calls_yearly( $queue = "Voz_Reservas", $start = "weekstart", $end = "weekend" )
+    public function calls_yearly( $queue = "Voz_Reservas,Voz_Grupos", $start = "weekstart", $end = "weekend" )
     {
         $lu = $this->getLastUpdate();
         $builder = $this->db->table('llamadas_cio');
+        $queue = explode(',',$queue);
+
+        $start = $start == "weekstart" || $start == "" ? date('Y') : date('Y', strtotime($start));
+        $end = $end == "weekend" || $end == "" ? date('Y') : date('Y', strtotime($end));
+
+        // Establecer la fecha inicial como el primer día del año de la fecha obtenida en el parametro $start
+        $startDate = date('Y-m-d', strtotime("first day of January $start"));
+
+        // Establecer la fecha final como el último día del año de la fecha obtenida en el parametro $end
+        $endDate = date('Y-m-d', strtotime("last day of December $end"));
 
         $currentYear = date('Y');
         $select = "CONCAT(YEAR(Fecha), '-', LPAD(MONTH(Fecha), 2, '0')) AS Fecha,
@@ -432,8 +442,8 @@ class QueryCalls extends BaseController {
             CAST(AVG(IF(disposicion LIKE 'calle%', time_to_sec(tiempo_cola)+time_to_sec(marcado_timbrando), 0)) as DECIMAL(5,2)) as ASA";
 
         $builder->select($select)
-            ->whereIn("servicio_campana", explode(',', $queue))
-            ->where("YEAR(Fecha)", $currentYear)
+            ->whereIn("servicio_campana", $queue)
+            ->where("Fecha BETWEEN '$startDate' AND '$endDate'")
             ->where("desde !=", 5370)
             ->where("escenario !=", 'Encuesta')
             ->groupStart()
@@ -450,8 +460,8 @@ class QueryCalls extends BaseController {
         $response = $result->getResult('array');
 
         $builder->select($select)
-            ->whereIn("servicio_campana", explode(',', $queue))
-            ->where("YEAR(Fecha)", $currentYear)
+            ->whereIn("servicio_campana", $queue)
+            ->where("Fecha BETWEEN '$startDate' AND '$endDate'")
             ->where("desde != 5370")
             ->where("escenario != 'Encuesta'")
             ->groupStart()
@@ -461,22 +471,31 @@ class QueryCalls extends BaseController {
                     ->where("ivr !=", '')
                 ->groupEnd()
             ->groupEnd()
-            ->groupBy(["FechaGroup"])
             ->orderBy("Fecha", "ASC");
         $resultTotals = $builder->get();
         $responseTotals = $resultTotals->getResult('array');
 
         $params = [
             "year" => $currentYear,
-            "queue" => explode(',', $queue),
-            "inicio" => $start,
-            "fin" => $end   
+            "queue" => $queue,
+            "inicio" => $startDate,
+            "fin" => $endDate
         ];
+
+        // En cada elemento de $response, convertir Fecha y FechaGroup de YYYY-MM a MMM 'YY
+        foreach ($response as &$item) {
+            $dateObj = \DateTime::createFromFormat('Y-m', $item['Fecha']);
+            if ($dateObj) {
+                $item['Fecha'] = $dateObj->format('M \'y');
+                $item['FechaGroup'] = $dateObj->format('M \'y');
+            }
+        }
 
         return view('Cio/db-chart-yearly', [
             'data' => $response,
             "params" => $params,
             "lastUpdate" => $lu,
+            "url" => site_url('cio/dashboard/yearly/calls'),
             'totals' => $responseTotals[0] ?? []
         ]);
     }

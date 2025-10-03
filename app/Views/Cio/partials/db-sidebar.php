@@ -78,6 +78,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?= base_url('cio/dashboard/yearly/calls') ?>" class="db-sidebar-item">
+                            <i class="bi bi-calendar4-range db-sidebar-icon"></i>
+                            <span class="db-sidebar-text">Llamadas Anuales</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= base_url('cio/dashboard/callJourney') ?>" class="db-sidebar-item">
                             <i class="bi bi-diagram-3 db-sidebar-icon"></i>
                             <span class="db-sidebar-text">Call Journey</span>

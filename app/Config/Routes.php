@@ -65,7 +65,13 @@ $routes->group('cio', function($routes){
         $routes->get('queues/(:any)/(:any)', 'Cio\QueryCalls::queues/$1/$2');
         $routes->get('queues/(:any)/(:any)/(:any)', 'Cio\QueryCalls::queues/$1/$2/$3');
 
+        // LANGUAGES
         $routes->get('langs', 'Cio\QueryCalls::langs');
+        $routes->get('langs/(:any)', 'Cio\QueryCalls::langs/$1');
+        $routes->get('langs/(:any)/(:any)', 'Cio\QueryCalls::langs/$1/$2');
+        $routes->get('langs/(:any)/(:any)/(:any)', 'Cio\QueryCalls::langs/$1/$2/$3');
+
+        // HOTELS
         $routes->get('hotels', 'Cio\QueryCalls::hotels');
         $routes->get('hotels/(:any)', 'Cio\QueryCalls::hotels/$1');
         $routes->get('hotels/(:any)/(:any)', 'Cio\QueryCalls::hotels/$1/$2');
@@ -76,12 +82,20 @@ $routes->group('cio', function($routes){
         $routes->get('callJourney/(:any)', 'Cio\QueryCalls::callJourney/$1');
         $routes->get('callJourney/(:any)/(:any)', 'Cio\QueryCalls::callJourney/$1/$2');
         $routes->get('callJourney/(:any)/(:any)/(:any)', 'Cio\QueryCalls::callJourney/$1/$2/$3');
+
+        // CALLS
         $routes->get('calls', 'Cio\QueryCalls::calls');
-        $routes->get('calls/(:any)', 'Cio\QueryCalls::calls/$1/');
+        $routes->get('calls/(:any)', 'Cio\QueryCalls::calls/$1');
+        $routes->get('calls/(:any)/(:any)', 'Cio\QueryCalls::calls/$1/$2');
         $routes->get('calls/(:any)/(:any)/(:any)', 'Cio\QueryCalls::calls/$1/$2/$3');
+
+        // YEARLY CALLS
         $routes->get('yearly/calls', 'Cio\QueryCalls::calls_yearly');
         $routes->get('yearly/calls/(:any)', 'Cio\QueryCalls::calls_yearly/$1/');
+        $routes->get('yearly/calls/(:any)/(:any)', 'Cio\QueryCalls::calls_yearly/$1/$2');
         $routes->get('yearly/calls/(:any)/(:any)/(:any)', 'Cio\QueryCalls::calls_yearly/$1/$2/$3');
+
+        // ACTIVITY
         $routes->get('activity/monthly', 'Cio\AgentActivity::monthly');
         $routes->get('activity/live', 'Cio\AgentActivity::live');
     });

@@ -40,7 +40,7 @@ class TransportacionController extends BaseController
         return $h;
     }
 
-    public function index( $viewUrl = 'Transpo/index' )
+    public function index( $viewUrl = 'Transpo/v2/index' )
     {
         $model = new TransportacionesModel();
 

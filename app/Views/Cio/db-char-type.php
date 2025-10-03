@@ -162,6 +162,7 @@ Dashboard CC - Llamadas - - - - <?= implode(",", $params['queue']) ?> <small>(<?
             scales: {
                 x: {
                     beginAtZero: true,
+                    max: Math.min(100, Math.ceil(Math.max(...sortedValues.map(v => (v / totalValue) * 100)) + 10)),
                     ticks: {
                         callback: function(value) {
                             return value + '%';
