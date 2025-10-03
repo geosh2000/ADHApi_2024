@@ -206,7 +206,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= site_url('cio/dashboard') ?>" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0" target="_blank" onclick="if(this.href === window.location.href){event.preventDefault();}">
+                <a href="<?= site_url('cio/dashboard') ?>" class="nav-link <?= $currentPath === '' ? 'active' : '' ?>" tabindex="0" onclick="if(this.href === window.location.href){event.preventDefault();}">
                     <i class="fa-solid fa-chart-line"></i><span>Estadísticas</span>
                 </a>
             </li>

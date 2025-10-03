@@ -425,10 +425,10 @@ class TransportacionController extends BaseController
         // Intentar eliminar el registro
         if ($transpoModel->where('id',$id)->delete()) {
             // Si la eliminación es exitosa, redirigir con un mensaje de éxito
-            return redirect()->to(site_url('transpo').'?'.$_SERVER['QUERY_STRING'])
+            return redirect()->to(site_url('transpo2').'?'.$_SERVER['QUERY_STRING'])
                 ->with('success', 'Registro '.$id.' Borrado');
         } else {
-            return redirect()->to(site_url('transpo').'?'.$_SERVER['QUERY_STRING'])
+            return redirect()->to(site_url('transpo2').'?'.$_SERVER['QUERY_STRING'])
                 ->with('error', 'Registro no encontrado.');
         }
     }

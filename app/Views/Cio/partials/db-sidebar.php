@@ -2,7 +2,7 @@
 .db-sidebar {
     width: 60px;
     height: calc(100vh - 58px);
-    background-color: #343a40;
+    background-color: #215a94;
     transition: width 0.3s;
     overflow-x: hidden;
     position: relative;

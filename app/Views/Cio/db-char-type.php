@@ -67,10 +67,10 @@ Dashboard CC - Llamadas - - - - <?= implode(",", $params['queue']) ?> <small>(<?
         <?= $this->include('Cio/partials/filter') ?>
         <!-- GRÁFICO -->
         <div class="chart-section">
-            <div class="chart-container copyable-element" data-copy-name="Gráfico de Disposiciones">
-                <div class="copy-overlay" onclick="copyElementAsImage(this)">
+            <div class="chart-container copyable-element" data-copy-target="myChart1">
+                <button class="copy-overlay" onclick="copyElementAsImage('myChart1')">
                     <i class="fas fa-copy"></i>
-                </div>
+                </button>
                 <canvas id="myChart1"></canvas>
             </div>
         </div>
@@ -183,61 +183,71 @@ Dashboard CC - Llamadas - - - - <?= implode(",", $params['queue']) ?> <small>(<?
     });
 
     // Función para copiar elemento como imagen
-    async function copyElementAsImage(button) {
-        const element = button.closest('.copyable-element');
-        const elementName = element.getAttribute('data-copy-name') || 'Elemento';
-        
-        // Cambiar icono a loading
-        const icon = button.querySelector('i');
-        const originalClass = icon ? icon.className : '';
-        if (icon) icon.className = 'fas fa-spinner fa-spin';
-        button.classList.add('copying');
+    async function copyElementAsImage(elementId) {
+        const button = event.target.closest('.copy-overlay');
+        const originalIcon = button.innerHTML;
         
         try {
+            // Cambiar icono a loading
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+            
+            const element = document.getElementById(elementId);
+            
+            // Configuración para html2canvas
             const canvas = await html2canvas(element, {
                 backgroundColor: '#ffffff',
-                scale: 2,
-                logging: false,
-                useCORS: true
+                scale: 2, // Mayor resolución
+                useCORS: true,
+                allowTaint: true,
+                scrollX: 0,
+                scrollY: 0,
+                width: element.offsetWidth,
+                height: element.offsetHeight
             });
             
+            // Convertir canvas a blob
             canvas.toBlob(async (blob) => {
                 try {
+                    // Copiar al portapapeles
                     await navigator.clipboard.write([
-                        new ClipboardItem({ 'image/png': blob })
+                        new ClipboardItem({
+                            'image/png': blob
+                        })
                     ]);
                     
                     // Mostrar éxito
-                    if (icon) icon.className = 'fas fa-check';
-                    button.classList.remove('copying');
-                    button.classList.add('success');
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    button.classList.add('copy-success');
                     
+                    // Restaurar después de 2 segundos
                     setTimeout(() => {
-                        if (icon) icon.className = originalClass;
-                        button.classList.remove('success');
+                        button.innerHTML = originalIcon;
+                        button.classList.remove('copy-success');
+                        button.disabled = false;
                     }, 2000);
                     
                 } catch (err) {
-                    console.error('Error al copiar:', err); 
-                    showError();
+                    console.error('Error al copiar al portapapeles:', err);
+                    showCopyError(button, originalIcon);
                 }
-            });
+            }, 'image/png');
             
         } catch (err) {
-            console.error('Error al capturar:', err);
-            showError();
+            console.error('Error al generar imagen:', err);
+            showCopyError(button, originalIcon);
         }
+    }
+
+    function showCopyError(button, originalIcon) {
+        button.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        button.style.background = 'rgba(220, 53, 69, 0.9)';
         
-        function showError() {
-            if (icon) icon.className = 'fas fa-times';
-            button.classList.remove('copying');
-            button.classList.add('error');
-            
-            setTimeout(() => {
-                if (icon) icon.className = originalClass;
-                button.classList.remove('error');
-            }, 2000);
-        }
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+            button.style.background = '';
+            button.disabled = false;
+        }, 2000);
     }
 
     // Inicializar cuando se carga la página

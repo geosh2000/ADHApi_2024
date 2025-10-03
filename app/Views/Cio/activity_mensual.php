@@ -1,19 +1,21 @@
-<!-- CARGA LAYOUT DEL DASHBOARD DE CIO -->
-<?= $this->extend('layouts/cio-dashboard') ?>
 
-<!-- CONTENIDO PRINCIPAL -->
-<?= $this->section('content') ?>
+<?= $this->extend('Cio/layouts/layout') ?>
+
+<?php 
+$fecha = $_GET['fecha'] ?? date('Y-m-d');
+?>
+
+<?= $this->section('pageTitle') ?>
+Dashboard CC (CIO)
+<?= $this->endSection() ?>
+
+<?= $this->section('title') ?>
+Dashboard CC - Resumen Mensual de Actividades
+<?= $this->endSection() ?>
+
+<?= $this->section('styles') ?>
 
 <style>
-    .mainWindow {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        height: calc(100vh - 58px);
-        padding: 15px;
-        overflow: hidden;
-    }
 
     .chart-container {
         position: relative;
@@ -33,60 +35,7 @@
         transform: translateY(-2px);
     }
 
-    .copy-overlay {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 10;
-    }
-
-    .chart-container:hover .copy-overlay {
-        opacity: 1;
-    }
-
-    .copy-overlay:hover {
-        background: rgba(0, 0, 0, 0.9);
-        transform: scale(1.1);
-    }
-
-    .copy-success {
-        background: rgba(40, 167, 69, 0.9) !important;
-    }
-
-    .controls-section {
-        background: white;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn-group .btn {
-        border-radius: 0;
-    }
-
-    .btn-group .btn:first-child {
-        border-top-left-radius: 0.375rem;
-        border-bottom-left-radius: 0.375rem;
-    }
-
-    .btn-group .btn:last-child {
-        border-top-right-radius: 0.375rem;
-        border-bottom-right-radius: 0.375rem;
-    }
-
+   
     .chart-title {
         font-size: 1.3rem;
         font-weight: bold;
@@ -105,13 +54,24 @@
         margin-bottom: 15px;
         font-size: 1.5rem;
     }
+
+     .controls-section {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 </style>
+<?= $this->endSection() ?>
 
-<div class="mainWindow">
+<?= $this->section('mainContent') ?>
+
+
     <div class="container-fluid h-100 d-flex flex-column">
-        <h2 class="page-title">Resumen Mensual de Actividades</h2>
-
-        <!-- Controles -->
+        
+    <!-- Controles -->
         <div class="controls-section flex-shrink-0">
             <div class="row align-items-center">
                 <div class="col-md-4">
@@ -150,6 +110,10 @@
         </div>
     </div>
 </div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>

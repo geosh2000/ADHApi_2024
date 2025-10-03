@@ -52,6 +52,8 @@ $routes->group('cio', function($routes){
     
     $routes->group('dashboard', function($routes){
         $routes->get('', 'Cio\QueryCalls::test');
+
+        // Disposicion
         $routes->get('disposicion', 'Cio\QueryCalls::types');
         $routes->get('disposicion/(:any)', 'Cio\QueryCalls::types/$1');
         $routes->get('disposicion/(:any)/(:any)', 'Cio\QueryCalls::types/$1/$2');

@@ -1,11 +1,19 @@
-<?= $this->extend('layouts/cio-dashboard') ?>
 
-<?= $this->section('content') ?>
+<?= $this->extend('Cio/layouts/layout') ?>
 
 <?php 
 $fecha = $_GET['fecha'] ?? date('Y-m-d');
 ?>
 
+<?= $this->section('pageTitle') ?>
+Dashboard CC (CIO)
+<?= $this->endSection() ?>
+
+<?= $this->section('title') ?>
+Dashboard CC - Actividad en Vivo por Agente <small>(<?= $fecha ?>)</small>
+<?= $this->endSection() ?>
+
+<?= $this->section('styles') ?>
 <style>
     #timeline {
         border: 1px solid #ccc;
@@ -28,14 +36,14 @@ $fecha = $_GET['fecha'] ?? date('Y-m-d');
         white-space: normal;
     }
 </style>
+<?= $this->endSection() ?>
 
-<!-- Vis.js -->
-<script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
-<link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+<!-- CONTENIDO PRINCIPAL -->
+<?= $this->section('mainContent') ?>
 
-<div class="content">
-    <h2 class="text-center mb-4">Actividad en Vivo por Agente</h2>
-    
+
+
+<div class="container">
     <form method="get" class="row mb-4">
         <div class="col-md-4 offset-md-4">
             <label for="fechaFiltro" class="form-label">Selecciona una fecha:</label>
@@ -51,6 +59,12 @@ $fecha = $_GET['fecha'] ?? date('Y-m-d');
 
 <div id="tooltip"></div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+
+<script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const rawItems = [

@@ -172,10 +172,11 @@ class QueryCalls extends BaseController {
 
         $params = [
             "inicio" => $start,
-            "fin"   => $end
+            "fin"   => $end,
+            "queue" => $queue
         ];
 
-        return view('Cio/db-char-type', ['type' => $response, "title" => "Disposiciones", "params" => $params, "lastUpdate" => $lu]);
+        return view('Cio/db-char-type', ['type' => $response, "title" => "Disposiciones", "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/disposicion') ]);
             
     }
 
@@ -257,20 +258,22 @@ class QueryCalls extends BaseController {
 
         $params = [
             "inicio" => $start,
-            "fin"   => $end
+            "fin"   => $end,
+            "queue" => $queue
         ];
 
-        return view('Cio/db-char-type', ['type' => $response, "title" => "Hotel", "params" => $params, "lastUpdate" => $lu]);
+        return view('Cio/db-char-type', ['type' => $response, "title" => "Hotel", "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/hotels') ]);
             
     }
-    
-    public function langs( $start = "weekstart", $end = "weekend" ){
+
+    public function langs( $queue = "Voz_Reservas,Voz_grupos", $start = "weekstart", $end = "weekend" ){
 
         $lu = $this->getLastUpdate();
         $builder = $this->db->table('llamadas_cio');
        
         $start = $start == "weekstart" || $start == "" ? $this->weekDays() : $start;
         $end = $end == "weekend" || $end == "" ? $this->weekDays( true ) : $end;
+        $queue = explode(',',$queue);
 
         $select = "IF(idioma = '','NA', idioma) as Field, COUNT(*) as val";
         
@@ -279,6 +282,7 @@ class QueryCalls extends BaseController {
             ->where("desde != 5370")
             ->where("escenario != 'Encuesta'")
             ->where("Fecha >=", "20240501")
+            ->whereIn("servicio_campana", $queue)
             ->groupStart()
                 ->whereNotIn("tipo_llamada", ['Outbound','External','Internal'])
                 ->orGroupStart()
@@ -297,10 +301,11 @@ class QueryCalls extends BaseController {
 
         $params = [
             "inicio" => $start,
-            "fin"   => $end
+            "fin"   => $end,
+            "queue" => $queue
         ];
 
-        return view('Cio/db-char-type', ['type' => $response, "title" => "Idioma", "params" => $params, "lastUpdate" => $lu]);
+        return view('Cio/db-char-type', ['type' => $response, "title" => "Idioma", "params" => $params, "lastUpdate" => $lu, "url" => site_url('cio/dashboard/langs') ]);
             
     }
 
